@@ -49,8 +49,9 @@ if (is) {
   cout << "Reading " << data_length << " characters... \n";
 
     ////////////////////////////
-    //Reading the actual data//
-    ///////////////////////////
+    //Reading the actual data///
+    ////////////////////////////
+    ////////////////////////////
     while (is) {
 
         //read 4 bytes at the time
