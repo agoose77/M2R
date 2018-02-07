@@ -1,0 +1,1 @@
+install normal root and then You should install libroot-bindings-python-dev -- it solves the issue.
