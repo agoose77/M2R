@@ -37,10 +37,21 @@ if (is) {
   Int_t adc,bin_slot,adc_low,adc_high;
   Int_t ampl,adc_num,Event;
 
+
   //Branches to store the data
-  data->Branch("adc",&adc_num,"adc_num/I");
-  data->Branch("ampl",&ampl,"ampl/I");
-  data->Branch("Event",&Event, "Event/I");
+  //data->Branch("adc",&adc_num,"adc_num/I");
+  //data->Branch("ampl",&ampl,"ampl/I");
+  //data->Branch("Event",&Event, "Event/I");
+
+  ////////////////////////////
+  //Multileafs creation///
+  ////////////////////////////
+  /*
+  Int_t Event[200]
+  for (int j=0;j<200;j++){
+  data.Branch(TString::Format("Event[%i]", j), &DET, TString::Format("Event[%i]/I", j)); //bueno
+  }
+  */
 
   // get length of file:
   is.seekg (0, is.end); // go to the end of file
@@ -50,7 +61,6 @@ if (is) {
 
     ////////////////////////////
     //Reading the actual data///
-    ////////////////////////////
     ////////////////////////////
     while (is) {
 
