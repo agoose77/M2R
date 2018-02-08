@@ -16,7 +16,7 @@ void M2R() {
   TStopwatch StopWatch; //stop watch to keep on track of efficiency
   StopWatch.Start();
 
-  std::ifstream is ("R16_0", std::ifstream::binary); //MIDAS binary file source
+  std::ifstream is ("R7_0c", std::ifstream::binary); //MIDAS binary file source
 
 if (is) {
   TFile f("data.root","UPDATE"); //ROOT file
@@ -39,19 +39,19 @@ if (is) {
 
 
   //Branches to store the data
-  //data->Branch("adc",&adc_num,"adc_num/I");
-  //data->Branch("ampl",&ampl,"ampl/I");
-  //data->Branch("Event",&Event, "Event/I");
+  data->Branch("adc",&adc_num,"adc_num/I");
+  data->Branch("ampl",&ampl,"ampl/I");
+  data->Branch("Event",&Event, "Event/I");
 
   ////////////////////////////
   //Multileafs creation///
   ////////////////////////////
-  /*
-  Int_t Event[200]
+
+  Int_t DET[200];
   for (int j=0;j<200;j++){
-  data.Branch(TString::Format("Event[%i]", j), &DET, TString::Format("Event[%i]/I", j)); //bueno
+  data->Branch(TString::Format("DET[%i]", j), TString::Format("&DET[%i]", j), TString::Format("DET[%i]/I", j)); //bueno
   }
-  */
+
 
   // get length of file:
   is.seekg (0, is.end); // go to the end of file
@@ -70,6 +70,7 @@ if (is) {
           //check if Block, start of header
           if(pre_event[0]==69 && pre_event[1]==66){Bcount++;}
           //check if event
+          for (size_t ii = 0; ii < 200; ii++) {DET[ii]=0;}
           if (pre_event[0]==255){
             Ecount+1;
             a=int(((pre_event[2]*256)+pre_event[3])/4)-1;
@@ -81,8 +82,10 @@ if (is) {
                     adc_num = 32*(pre_event[1]-1)+pre_event[0]; // Get ADC num
                     ampl = (256*(pre_event[2]))+pre_event[3]; // Get Amplitude
                     Event=Ecount; // number of Event
-                    data->Fill(); // Data filling
+                    //data->Fill(); // Data filling
                     }
+          //  DET[adc_num]=ampl;
+          //  data->Fill(); // Data filling
          }
     }
   is.close();
