@@ -40,7 +40,7 @@ if (is) {
 
   //Branches to store the data
   data->Branch("adc",&adc_num,"adc_num/I");
-  data->Branch("ampl",&ampl,"ampl/I");
+  data->Branch("ampl",&ampl, "ampl/I");
   data->Branch("Event",&Event, "Event/I");
 
   ////////////////////////////

@@ -25,12 +25,23 @@ TBrowser n
 
 
 ///prueba buenaza
+rm data.root
+root -l
 TFile f("data.root","UPDATE"); //ROOT file
 TTree *data = new TTree("data","Tree data"); //Tree to store the Data
 data->Write("data.root",TObject::kOverwrite); // Making the root file
 //buenazo mi carnal
 Int_t DET[200]
 for (int j=0;j<200;j++){
-data.Branch(TString::Format("DET[%i]", j), &DET, TString::Format("DET[%i]/I", j)); //bueno
+data.Branch(TString::Format("DET[%i]", j), &DET[0], TString::Format("DET[%i]/I", j)); //bueno
 }
 TBrowser n
+
+
+rm data.root
+root -l
+TFile f("data.root","UPDATE"); //ROOT file
+TTree *data = new TTree("data","Tree data"); //Tree to store the Data
+data->Write("data.root",TObject::kOverwrite); // Making the root file
+Int_t AA[200];
+data->Branch("AA",AA,"AA[200]/F");
