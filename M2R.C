@@ -78,11 +78,14 @@ data->Branch("event_vector",&event_vector,"event_vector[200]/I");
                     for (size_t r = 0; r < 4; r++) {pre_event[r]=(unsignedchar)buffer[r];} //Char to Int
                     adc_num = 32*(pre_event[1]-1)+pre_event[0]; // Get ADC num
                     ampl = (256*(pre_event[2]))+pre_event[3]; // Get Amplitude
-                    Event=Ecount; // number of Event
+                    for (size_t v = 0; v < 4; v++) { ;
+                      printf("%i\n", pre_event[v]);
+                    }
+                    //Event=Ecount; // number of Event
                     //data->Fill(); // Data filling
                     event_vector[adc_num]=ampl;
                     }
-          for (size_t z = 0; z < 200; z++) { if(event_vector[z]!=0) printf("chan : %i ampl: %i\n",z,ampl );  }
+          //for (size_t z = 0; z < 200; z++) { if(event_vector[z]!=0) printf("chan : %i ampl: %i\n",z,ampl );  }
          //data->Fill(); // Data filling
          }
     }
