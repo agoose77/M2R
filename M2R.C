@@ -16,7 +16,7 @@ void M2R() {
   TStopwatch StopWatch; //stop watch to keep on track of efficiency
   StopWatch.Start();
 
-  std::ifstream is ("R7_0c", std::ifstream::binary); //MIDAS binary file source
+  std::ifstream is ("R16_0", std::ifstream::binary); //MIDAS binary file source
 
 if (is) {
   TFile f("data.root","UPDATE"); //ROOT file
@@ -39,19 +39,16 @@ if (is) {
 
 
   //Branches to store the data
-  data->Branch("adc",&adc_num,"adc_num/I");
-  data->Branch("ampl",&ampl, "ampl/I");
-  data->Branch("Event",&Event, "Event/I");
+  //data->Branch("adc",&adc_num,"adc_num/I");
+  //data->Branch("ampl",&ampl, "ampl/I");
+  //data->Branch("Event",&Event, "Event/I");
 
-  ////////////////////////////
-  //Multileafs creation///
-  ////////////////////////////
+/////////////////
+///LAST CHANCE///
+/////////////////
 
-  Int_t DET[200];
-  for (int j=0;j<200;j++){
-  data->Branch(TString::Format("DET[%i]", j), TString::Format("&DET[%i]", j), TString::Format("DET[%i]/I", j)); //bueno
-  }
-
+Int_t  event_vector[200];
+data->Branch("event_vector",&event_vector,"event_vector[200]/I");
 
   // get length of file:
   is.seekg (0, is.end); // go to the end of file
@@ -70,22 +67,23 @@ if (is) {
           //check if Block, start of header
           if(pre_event[0]==69 && pre_event[1]==66){Bcount++;}
           //check if event
-          for (size_t ii = 0; ii < 200; ii++) {DET[ii]=0;}
           if (pre_event[0]==255){
-            Ecount+1;
+            cout << "Event\n";
+            memset(event_vector, 0, sizeof(event_vector));
+            Ecount++;
             a=int(((pre_event[2]*256)+pre_event[3])/4)-1;
             for (size_t k = 0; k < a; k++) {
                     blu=k; //dumie variable for the loop
                     is.read(buffer,4); // read the event
                     for (size_t r = 0; r < 4; r++) {pre_event[r]=(unsignedchar)buffer[r];} //Char to Int
-
                     adc_num = 32*(pre_event[1]-1)+pre_event[0]; // Get ADC num
                     ampl = (256*(pre_event[2]))+pre_event[3]; // Get Amplitude
                     Event=Ecount; // number of Event
                     //data->Fill(); // Data filling
+                    event_vector[adc_num]=ampl;
                     }
-          //  DET[adc_num]=ampl;
-          //  data->Fill(); // Data filling
+          for (size_t z = 0; z < 200; z++) { if(event_vector[z]!=0) printf("chan : %i ampl: %i\n",z,ampl );  }
+         //data->Fill(); // Data filling
          }
     }
   is.close();
