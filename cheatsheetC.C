@@ -24,10 +24,7 @@ TFile f("data.root","UPDATE"); //ROOT file
 TTree *data = new TTree("data","Tree data"); //Tree to store the Data
 data->Write("data.root",TObject::kOverwrite); // Making the root file
 //buenazo mi carnal
-int det0;
-data->Branch("det0", &det0, "det0/I")
-
-
+//data->Branch("det0", &det0, "det0/I")
 for (int j=0;j<5;j++){
 data->Branch(TString::Format("det%i", j), &TString::Format("det%i", j), TString::Format("det%i/I",j));
 }
@@ -49,8 +46,13 @@ root -l
 TFile f("data.root","UPDATE"); //ROOT file
 TTree *data = new TTree("data","Tree data"); //Tree to store the Data
 data->Write("data.root",TObject::kOverwrite); // Making the root file
-Int_t AA[200];
-data->Branch("AA",AA,"AA[200]/F");
+Double_t AA[200];
+data->Branch("AA",AA,"AA[200]/D");
+for (int i = 0; i < 200; i++) {
+  AA[i]=i*2;
+}
+data->Fill()
+f.Write("",TObject::kOverwrite);
 
 
 
@@ -146,3 +148,7 @@ file->Close();
 
  memset(event_vector, 0, sizeof(event_vector));
  event_vector[adc_num]=ampl;
+
+
+
+//////////////////////
