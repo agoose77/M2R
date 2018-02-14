@@ -13,10 +13,10 @@ void M2R() {
   TDatime now; // day and time
   now.Print();
 
-  TStopwatch StopWatch; //stop watch to keep on track of efficiency
+  TStopwatch StopWatch,zeros; //stop watch to keep on track of efficiency
   StopWatch.Start();
 
-  std::ifstream is ("R16_0", std::ifstream::binary); //MIDAS binary file source
+  std::ifstream is ("R7_0", std::ifstream::binary); //MIDAS binary file source
 
 if (is) {
   TFile f("data.root","UPDATE"); //ROOT file
@@ -39,16 +39,12 @@ if (is) {
 
 
   //Branches to store the data
-  //data->Branch("adc",&adc_num,"adc_num/I");
-  //data->Branch("ampl",&ampl, "ampl/I");
-  //data->Branch("Event",&Event, "Event/I");
+Int_t Mult;
+///NUMBER OT DETECTORS TO ALLOCATE
+Float_t Z1[200];
+data->Branch("M_part", &Mult, "Mult/I");
+data->Branch("Z_event", Z1, "Z1[Mult]/F");
 
-/////////////////
-///LAST CHANCE///
-/////////////////
-
-Int_t  event_vector[200];
-data->Branch("event_vector",&event_vector,"event_vector[200]/I");
 
   // get length of file:
   is.seekg (0, is.end); // go to the end of file
@@ -68,8 +64,6 @@ data->Branch("event_vector",&event_vector,"event_vector[200]/I");
           if(pre_event[0]==69 && pre_event[1]==66){Bcount++;}
           //check if event
           if (pre_event[0]==255){
-            cout << "Event\n";
-            memset(event_vector, 0, sizeof(event_vector));
             Ecount++;
             a=int(((pre_event[2]*256)+pre_event[3])/4)-1;
             for (size_t k = 0; k < a; k++) {
@@ -78,13 +72,14 @@ data->Branch("event_vector",&event_vector,"event_vector[200]/I");
                     for (size_t r = 0; r < 4; r++) {pre_event[r]=(unsignedchar)buffer[r];} //Char to Int
                     adc_num = 32*(pre_event[1]-1)+pre_event[0]; // Get ADC num
                     ampl = (256*(pre_event[2]))+pre_event[3]; // Get Amplitude
-                    for (size_t v = 0; v < 4; v++) { ;
-                      printf("%i\n", pre_event[v]);
-                    }
                     //Event=Ecount; // number of Event
-                    //data->Fill(); // Data filling
-                    event_vector[adc_num]=ampl;
+                    Z1[adc_num]=ampl;
+                    if (adc_num>199) {cout << "alert\n";}
                     }
+          Mult=adc_num;
+          data->Fill(); // Data filling
+          for (size_t y = 0; y < 200; y++) {Z1[y]=0;}
+
           //for (size_t z = 0; z < 200; z++) { if(event_vector[z]!=0) printf("chan : %i ampl: %i\n",z,ampl );  }
          //data->Fill(); // Data filling
          }
