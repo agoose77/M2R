@@ -74,14 +74,10 @@ data->Branch("Z_event", Z1, "Z1[Mult]/F");
                     ampl = (256*(pre_event[2]))+pre_event[3]; // Get Amplitude
                     //Event=Ecount; // number of Event
                     Z1[adc_num]=ampl;
-                    if (adc_num>199) {cout << "alert\n";}
                     }
           Mult=adc_num;
           data->Fill(); // Data filling
-          for (size_t y = 0; y < 200; y++) {Z1[y]=0;}
-
-          //for (size_t z = 0; z < 200; z++) { if(event_vector[z]!=0) printf("chan : %i ampl: %i\n",z,ampl );  }
-         //data->Fill(); // Data filling
+          for (size_t y = 0; y < 200; y++) {Z1[y]=0;}  //NNED A BETTER WAY TO DO THIS!!
          }
     }
   is.close();
