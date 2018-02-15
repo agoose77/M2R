@@ -13,10 +13,10 @@ void M2R() {
   TDatime now; // day and time
   now.Print();
 
-  TStopwatch StopWatch,zeros; //stop watch to keep on track of efficiency
+  TStopwatch StopWatch; //stop watch to keep on track of efficiency
   StopWatch.Start();
 
-  std::ifstream is ("R7_0", std::ifstream::binary); //MIDAS binary file source
+  std::ifstream is ("R16_0", std::ifstream::binary); //MIDAS binary file source
 
 if (is) {
   TFile f("data.root","UPDATE"); //ROOT file
@@ -77,7 +77,6 @@ data->Branch("Z_event", Z1, "Z1[Mult]/F");
                     }
           Mult=adc_num;
           data->Fill(); // Data filling
-          for (size_t y = 0; y < 200; y++) {Z1[y]=0;}  //NNED A BETTER WAY TO DO THIS!!
           memset(Z1, 0, sizeof(Z1));
          }
     }

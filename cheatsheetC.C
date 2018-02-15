@@ -61,7 +61,7 @@ data->Fill()
 data->Write()
 
 
-
+memset(Z1, 0, sizeof(Z1));
 data->Draw("Z_part[9]>>(100,0,150)","Z_part[9]!=0","")
 
 for (size_t i = 0; i < 200; i++) {
@@ -226,3 +226,9 @@ file->Close();
 
 
 //////////////////////
+
+Float_t Z[200];
+for (size_t i = 0; i < 200; i++) {
+  Z[i]=i;
+}
+memset(Z1, 0, sizeof(Z1))
