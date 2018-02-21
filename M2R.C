@@ -16,7 +16,7 @@ void M2R() {
   TStopwatch StopWatch; //stop watch to keep on track of efficiency
   StopWatch.Start();
 
-  std::ifstream is ("R16_0", std::ifstream::binary); //MIDAS binary file source
+  std::ifstream is ("R177_0", std::ifstream::binary); //MIDAS binary file source
 
 if (is) {
   TFile f("data.root","UPDATE"); //ROOT file
@@ -63,7 +63,7 @@ data->Branch("Z_event", Z1, "Z1[Mult]/F");
           //check if Block, start of header
           if(pre_event[0]==69 && pre_event[1]==66){Bcount++;}
           //check if event
-          if (pre_event[0]==255){
+          if (pre_event[0]==255 &&  pre_event[1]==255){
             Ecount++;
             a=int(((pre_event[2]*256)+pre_event[3])/4)-1;
             for (size_t k = 0; k < a; k++) {
@@ -76,6 +76,11 @@ data->Branch("Z_event", Z1, "Z1[Mult]/F");
                     Z1[adc_num]=ampl;
                     }
           Mult=adc_num;
+          if (Ecount<10) {
+            printf("Event: %i\n",Ecount );
+            for (size_t i = 0; i < Mult; i++){
+            if (Z1[i]!=0) {printf("Channel: %i Amplitude: %i\n",i, Z1[i]);}}
+          }
           data->Fill(); // Data filling
           memset(Z1, 0, sizeof(Z1));
          }

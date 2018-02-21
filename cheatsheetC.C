@@ -18,48 +18,8 @@ data->Branch("M_part", &Mult, "Mult/I");
 data->Branch("Z_part", Z, "Z[Mult]/F");
 //Float_t Z1[200]={0};
 //0
-Mult=5;
-Z[0]=12;
-Z[1]=17;
-Z[2]=1;
-Z[3]=13;
-Z[4]=3;
-data->Fill()
-//1
-Mult=17;
-Z[0]=12;
-Z[1]=17;
-Z[16]=100;
-data->Fill()
-//2
-Mult=17;
-Z[0]=12;
-Z[1]=17;
-Z[2]=1;
-Z[3]=13;
-Z[4]=3;
-Z[16]=100;
-data->Fill()
-//3
-Mult=5;
-Z[0]=45;
-Z[1]=5;
-Z[2]=12;
-Z[3]=32;
-Z[4]=5;
-data->Fill()
-//4
-Mult=10;
-Z[0]=45;
-Z[1]=5;
-Z[2]=12;
-Z[3]=32;
-Z[6]=23;
-Z[9]=5;
-data->Fill()
 
 data->Write()
-
 
 memset(Z1, 0, sizeof(Z1));
 data->Draw("Z_part[9]>>(100,0,150)","Z_part[9]!=0","")
@@ -79,9 +39,8 @@ for(Int_t i=0;i<16385;i++) file >> data[i];
 for(Int_t i=0;i<16385;i++) file>> Int_t buffer[16384]
 
 
-for (size_t t = 0; t < 60; t++) {
- cout<< unsignedchar(data[t]) << "\n";
- data->Branch("Event",&Event,"Event[%t]/I");
+for (size_t t = 0; t < 5; t++) {
+TString::Format("data->Draw(\"Z_event[%i]>>(4000,0,4000)\",\"Z_event[%i]!=0\",\"\")",t);
 }
 
 //medio funcionando
@@ -232,3 +191,15 @@ for (size_t i = 0; i < 200; i++) {
   Z[i]=i;
 }
 memset(Z1, 0, sizeof(Z1))
+
+//////////////////////////
+
+Char_t nomAlias[80];
+for(Int_t i=1;i<=10;i++){
+sprintf(nomAlias,"NewVar%d",i);
+TString var("variable");
+var+=i;
+TH1 *h=(TH1 *)gROOT->FindObject(Form("Histo%d_mono",i));
+Double_t y=h->GetMaximum();
+a->SetAlias(nomAlias,Form("%s-%f",var.Data(),y));
+}
