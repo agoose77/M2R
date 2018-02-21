@@ -58,13 +58,11 @@ TTree *data = new TTree("data","Tree data"); //Tree to store the Data
 data->Write("data.root",TObject::kOverwrite); // Making the root file
 //very good mi carnal
 //data->Branch("det0", &det0, "det0/I")
-for (int j=0;j<5;j++){
-data->Branch(TString::Format("det%i", j), &TString::Format("det%i", j), TString::Format("det%i/I",j));
+for (int t=0;t<5;t++){
+TString::Format("data->Draw(\"Z_event[%i]>>(4000,0,4000)\",\"Z_event[%i]!=0\",\"\")",t,t);
 }
 
-
-
-;
+data->Branch(TString::Format("det%i", j), &TString::Format("det%i", j), TString::Format("det%i/I",j));
 
 
 data.Branch("DET[1]", &DET[1], "DET[1]/I");
@@ -194,12 +192,15 @@ memset(Z1, 0, sizeof(Z1))
 
 //////////////////////////
 
-Char_t nomAlias[80];
-for(Int_t i=1;i<=10;i++){
-sprintf(nomAlias,"NewVar%d",i);
-TString var("variable");
-var+=i;
-TH1 *h=(TH1 *)gROOT->FindObject(Form("Histo%d_mono",i));
-Double_t y=h->GetMaximum();
-a->SetAlias(nomAlias,Form("%s-%f",var.Data(),y));
+for (int t=0;t<5;t++){
+TString::Format("data->Draw(\"Z_event[%i]>>(4000,0,4000)\",\"Z_event[%i]!=0\",\"\")",t,t);
 }
+
+///How to divide CANVAS///
+
+TCanvas *c1 = new TCanvas()
+ c1->Divide(1,2) ///horizontal split
+ c1->cd(1)
+ h1->Draw()
+ c1->cd(2)
+ h2->Draw()
