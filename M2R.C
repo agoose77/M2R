@@ -68,8 +68,8 @@ if (is) { // this if is just to check if the file exists.
   // Multiplicity
   Int_t Mult;
   ///NUMBER OT DETECTORS TO ALLOCATE
-  Float_t Z1[200];
-  memset(Z1, 0, sizeof(Z1));
+  Float_t Z1[200]; // 200 is more than enough to allocate, you can add more if required.
+  memset(Z1, 0, sizeof(Z1)); // Set Z1 to zero
   //Branches to store the data
   data->Branch("M_part", &Mult, "Mult/I");
   data->Branch("Z_event", Z1, "Z1[Mult]/F");
@@ -84,11 +84,12 @@ if (is) { // this if is just to check if the file exists.
     ////////////////////////////
     //Reading the actual data///
     ////////////////////////////
-    while (is) {  // while the data file is readable
+
+    while (is) {  // while the data file is not at EOF
 
         //read 4 bytes at the time
         is.read(buffer,4);
-        for (size_t i = 0; i < 4; i++) {pre_event[i]=(unsignedchar)buffer[i];} // turn them into ints
+        for (size_t i = 0; i < 4; i++) {pre_event[i]=(unsignedchar)buffer[i];} // turn read chars into ints
           //check if Block, start of header
           if(pre_event[0]==69 && pre_event[1]==66){Bcount++;} //block counter
           //check if event
@@ -109,9 +110,9 @@ if (is) { // this if is just to check if the file exists.
                     //Event=Ecount; // number of Event
                     Z1[adc_num]=ampl;
                     }
-          // The way the data is stored(in order, from the chanel zero to //
-          // the last channel with hit on it) allows to have the ///////////
-          //multiplicity of the events to be equal to the last ADC number///
+          /*The way the data is stored(in order, from the chanel zero to
+          the last channel with hit on it) allows to have the
+          multiplicity of the events to be equal to the last ADC number*/
           Mult=adc_num;
           if (Mult>detectors) {detectors=Mult;} // How to know how many detectors were involved in the experiment if the quantity is know this step is removable
 
