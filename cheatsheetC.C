@@ -18,7 +18,6 @@ data->Branch("M_part", &Mult, "Mult/I");
 data->Branch("Z_part", Z, "Z[Mult]/F");
 //Float_t Z1[200]={0};
 //0
-
 data->Write()
 
 memset(Z1, 0, sizeof(Z1));
@@ -193,9 +192,13 @@ memset(Z1, 0, sizeof(Z1))
 //////////////////////////
 
 for (int t=0;t<5;t++){
-TString::Format("data->Draw(\"Z_event[%i]>>(4000,0,4000)\",\"Z_event[%i]!=0\",\"\")",t,t);
+TString::Format("data->Draw("Z_event[%i]>>(4000,0,4000)","Z_event[%i]!=0","")");
 }
 
+
+//////
+
+data->Draw("Z_event[1]>>(4000,0,4000)","Z_event[1]!=0","")
 ///How to divide CANVAS///
 
 TCanvas *c1 = new TCanvas()
@@ -204,3 +207,21 @@ TCanvas *c1 = new TCanvas()
  h1->Draw()
  c1->cd(2)
  h2->Draw()
+
+/////////////////
+	TH1F *hadc[200];
+	for(int i=0;i<200;i++) {
+		ostringstream name;
+		name<<"adc"<<i;
+		hadc[i] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
+	}
+
+
+ TH1F *myhist[1000];
+ char *histname = new char[10];
+sprintf(histname, "h_x_%d",xx);
+myhist[xx]=new TH1F(histname,"",100,-0.25,0.25);
+for (Int_t iii=0;iii<nentries; iii++) {
+Double_t binx=h_x->GetBinContent(iii);
+myhist[xx]->SetBinContent(iii,binx);
+}
