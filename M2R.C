@@ -114,14 +114,11 @@ if (is) { // this if is just to check if the file exists.
           the last channel with hit on it) allows to have the
           multiplicity of the events to be equal to the last ADC number*/
           Mult=adc_num;
-          if (Mult>detectors) {detectors=Mult;} // How to know how many detectors were involved in the experiment if the quantity is know this step is removable
 
-        //Just to check Everything is going well
-        //  if (Ecount<10) {
-        //    printf("Event: %i\n",Ecount );
-        //   for (size_t i = 0; i < Mult; i++){if (Z1[i]!=0) {printf("Channel: %i Amplitude: %i\n",i, Z1[i]);}}
-        //    }
-          data->Fill(); // Data filling
+          // How many detectors were involved in the experiment if the quantity is known this step is removable
+          if (Mult>detectors) {detectors=Mult;}
+
+          data->Fill(); // Data dumping into the Branch
           memset(Z1, 0, sizeof(Z1)); // reset array to zero
          }
     }
