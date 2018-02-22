@@ -1,21 +1,49 @@
+//     ___  _                   _
+//    / __\| |__    __ _  _ __ (_) ___  ___   __ _
+//   / /   | '_ \  / _` || '__|| |/ __|/ __| / _` |
+//  / /___ | | | || (_| || |   | |\__ \\__ \| (_| |
+//  \____/ |_| |_| \__,_||_|   |_||___/|___/ \__,_|
+//   ______  _     _   ______  ______   _______
+//  (_____ \(_)   (_) / _____)(_____ \ (_______)
+//   _____) )_______ ( (____   _____) ) _______
+//  |  ____/|  ___  | \____ \ |  __  / |  ___  |
+//  | |     | |   | | _____) )| |  \ \ | |   | |
+//  |_|     |_|   |_|(______/ |_|   |_||_|   |_|
+//
+
+/*
+to use this script:
+Requisites: root >5.32
+
+to get root in ubuntu:
+$ sudo apt-get install root-system
+
+type in terminal, -l option is to NOT show the root image
+$ root -l
+root[0] .x M2R.C
+when asked, input the MIDAS file you wish to convert
+*/
 
 #include <iostream>     // std::cout
 #include <fstream>      // std::ifstream
 
-#include "TFile.h"
-#include "TTree.h"
-#include "TObject.h"
+#include "TFile.h"      //Write root files
+#include "TTree.h"      // Make trees
+#include "TObject.h"    // Write objects
 
 
 void M2R() {
 
   TDatime now; // date and time
   now.Print(); // print date and time
+  string mystring;
+  cout << "Enter the name of the MIDAS file you want to convert to root" << "\n" ;
+  cin >> mystring;
 
   TStopwatch StopWatch; //stopwatch to keep on track of efficiency
   StopWatch.Start(); // start of the stopwatch
 
-  std::ifstream is ("R177_0", std::ifstream::binary); //MIDAS binary file source
+  std::ifstream is (mystring.c_str(), std::ifstream::binary); //MIDAS binary file source
 
 if (is) { // this if is just to check if the file exists.
   TFile f("data.root","UPDATE"); //ROOT file
@@ -101,9 +129,7 @@ if (is) { // this if is just to check if the file exists.
   printf("Events %i\n",Ecount );
   printf("Blocks %i\n",Bcount );
   printf("Channels on the experiment: %i \n", detectors );
-  StopWatch.Stop(); // Measure efficiency
-  TDatime now1; // time and date
-  now1.Print(); // time and date
+  StopWatch.Stop(); // Measure time for efficiency
   cout << "Total Real Time: "<< StopWatch.RealTime() << "s" << endl;
 }
 else{cout<< "error opening the file\n";}
