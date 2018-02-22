@@ -209,13 +209,12 @@ TCanvas *c1 = new TCanvas()
  h2->Draw()
 
 /////////////////
-	TH1F *hadc[200];
 	for(int i=0;i<200;i++) {
 		ostringstream name;
-		name<<"adc"<<i;
-		hadc[i] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
+		name<<i;
+    data->Draw("Z_event[name.str().c_str()]>>(4000,0,4000)","Z_event[name.str().c_str()]!=0","");
 	}
-
+hadc[i] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
 
  TH1F *myhist[1000];
  char *histname = new char[10];
