@@ -13,7 +13,7 @@ Requisites: root >5.32
 to get root in ubuntu:
 $ sudo apt-get install root-system
 
-type in terminal, -l option is to NOT show the root image
+type in terminal, -l option is to NOT show the root image at start
 $ root -l
 root[0] .x M2R.C
 when asked, input the MIDAS file you wish to convert
@@ -46,17 +46,17 @@ cout<<BLUE<<"  \\______)|_|   |_||_|   |_||_|   |_||_|(______/(______/ |_|   |_|
 
   TDatime now; // date and time
   now.Print(); // print date and time
-  string mystring;
+  string mystring; //string to store the name of the file
   cout <<GREEN<< "Enter the name of the MIDAS file you want to convert to root" << "\n" << RESET;
-  cin >> mystring;
+  cin >> mystring; // user input file name
 
   TStopwatch StopWatch; //stopwatch to keep on track of efficiency
   StopWatch.Start(); // start of the stopwatch
 
   std::ifstream is (mystring.c_str(), std::ifstream::binary); //MIDAS binary file source
 
-  // This string are just to name the new root file the same way as the MIDAS file.
-  string rootext(".root"); //
+  // These strings are just to name the new root file the same way as the MIDAS file.
+  string rootext(".root");
   string RF = mystring +rootext;
 
 if (is) { // this if is just to check if the file exists.
