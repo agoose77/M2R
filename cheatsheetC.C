@@ -212,9 +212,10 @@ TCanvas *c1 = new TCanvas()
 	for(int i=0;i<200;i++) {
 		ostringstream name;
 		name<<i;
-    data->Draw("Z_event[name.str().c_str()]>>(4000,0,4000)","Z_event[name.str().c_str()]!=0","");
+    adc[i] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
 	}
-hadc[i] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
+
+adc[i] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
 
  TH1F *myhist[1000];
  char *histname = new char[10];
@@ -235,3 +236,10 @@ std::string firstlevel ("com");
 
   hostname = "www." + secondlevel + '.' + firstlevel;
   url = scheme + hostname;
+
+//////
+
+TH1F *myhist[200];
+char *histname = new char[10];
+sprintf(histname, "h_x_%d",xx);
+myhist[xx]=new TH1F(histname,"",100,-0.25,0.25);

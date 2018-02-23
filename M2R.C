@@ -25,6 +25,9 @@ when asked, input the MIDAS file you wish to convert
 #include "TFile.h"      //Write root files
 #include "TTree.h"      // Make trees
 #include "TObject.h"    // Write objects
+#include <TH1.h>
+#include <TH2.h>
+#include "TCanvas.h"
 
 //Colours for format and visuals
 #define RESET   "\033[0m"
@@ -43,6 +46,14 @@ cout<<BLUE<<" | |      |  ___  ||  ___  ||  __  / | | \\____ \\ \\____ \\ |  ___
 cout<<BLUE<<" | |_____ | |   | || |   | || |  \\ \\ | | _____) )_____) )| |   | |"<<"\n";
 cout<<BLUE<<"  \\______)|_|   |_||_|   |_||_|   |_||_|(______/(______/ |_|   |_|"<<"\n"<<RESET;
 
+cout<<"                    "<<BLUE<<"   _______  ______   ______  "<<"\n";
+cout<<"                    "<<BLUE<<"  (_______)(_____ \\ (_____ \\ "<<"\n";
+cout<<"                    "<<BLUE<<"   _  _  _   ____) ) _____) )"<<"\n";
+cout<<"                    "<<BLUE<<"  | ||_|| | / ____/ |  __  / "<<"\n";
+cout<<"                    "<<BLUE<<"  | |   | || (_____ | |  \\ \\ "<<"\n";
+cout<<"                    "<<BLUE<<"  |_|   |_||_______)|_|   |_|"<<"\n"<<RESET;
+
+
 
   TDatime now; // date and time
   now.Print(); // print date and time
@@ -57,7 +68,7 @@ cout<<BLUE<<"  \\______)|_|   |_||_|   |_||_|   |_||_|(______/(______/ |_|   |_|
 
   // These strings are just to name the new root file the same way as the MIDAS file.
   string rootext(".root");
-  string RF = mystring +rootext;
+  string RF = mystring+rootext;
 
 if (is) { // this if is just to check if the file exists.
   TFile f(RF.c_str(),"UPDATE"); //ROOT file, RF.c_str() makes the new file to have the ORIGNAL.root as name
@@ -87,6 +98,14 @@ if (is) { // this if is just to check if the file exists.
   data->Branch("Z_event", Z1, "Z1[Mult]/F");
   // Histograms
   TH1F *h1 = new TH1F("Hits", "Number of detectos involved in each event", 200, 0, 200); //Distribution of #of active detectos in each event
+  TH1F *hadc[200];
+  for(int w=0;w<200;w++) {
+		ostringstream name;
+		name<<"hadc"<<w;
+		hadc[w] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
+	}
+
+
   // get length of file:
   is.seekg (0, is.end); // go to the end of file
   int data_length = is.tellg(); // how long is the file in Bytes
@@ -120,6 +139,7 @@ if (is) { // this if is just to check if the file exists.
                     ampl = (256*(pre_event[2]))+pre_event[3]; // Get Amplitude
                     //Event=Ecount; // number of Event
                     Z1[adc_num]=ampl;
+                    hadc[adc_num]->Fill(ampl);
                     }
           /*The way the data is stored(in order, from the chanel zero to
           the last channel with hit on it) allows to have the
@@ -135,8 +155,8 @@ if (is) { // this if is just to check if the file exists.
     }
   is.close(); //close the file
   f.Write("",TObject::kOverwrite); // DO NOT forget to actually write the ROOT File
-  cout <<YELLOW<< "Events" << Ecount << "\n";
-  cout <<YELLOW<< "Blocks" << Bcount << "\n";
+  cout <<YELLOW<< "Events: " << Ecount << "\n";
+  cout <<YELLOW<< "Blocks: " << Bcount << "\n";
   cout <<YELLOW << "Channels on the experiment: " << detectors+1 << "\n"; //Plus one because index starts at 0
   StopWatch.Stop(); // Measure time for efficiency
   cout << GREEN << "Total Real Time: "<< StopWatch.RealTime() << "s" << endl;
