@@ -1,16 +1,11 @@
-//     ___  _                   _
-//    / __\| |__    __ _  _ __ (_) ___  ___   __ _
-//   / /   | '_ \  / _` || '__|| |/ __|/ __| / _` |
-//  / /___ | | | || (_| || |   | |\__ \\__ \| (_| |
-//  \____/ |_| |_| \__,_||_|   |_||___/|___/ \__,_|
-//   ______  _     _   ______  ______   _______
-//  (_____ \(_)   (_) / _____)(_____ \ (_______)
-//   _____) )_______ ( (____   _____) ) _______
-//  |  ____/|  ___  | \____ \ |  __  / |  ___  |
-//  | |     | |   | | _____) )| |  \ \ | |   | |
-//  |_|     |_|   |_|(______/ |_|   |_||_|   |_|
-//
-
+/***
+ *    ________ ______  __________________ _______
+ *    ___  __ \___  / / /__  ___/___  __ \___    |
+ *    __  /_/ /__  /_/ / _____ \ __  /_/ /__  /| |
+ *    _  ____/ _  __  /  ____/ / _  _, _/ _  ___ |
+ *    /_/      /_/ /_/   /____/  /_/ |_|  /_/  |_|
+ *
+ */
 /*
 to use this script:
 Requisites: root >5.32
@@ -31,13 +26,28 @@ when asked, input the MIDAS file you wish to convert
 #include "TTree.h"      // Make trees
 #include "TObject.h"    // Write objects
 
+//Colours for format and visuals
+#define RESET   "\033[0m"
+#define BLUE    "\033[34m"	/* Blue */
+#define WHITE   "\033[37m"	/* White */
+#define GREEN   "\033[32m"	/* Green */
+#define YELLOW  "\033[33m"	/* Yellow */
+#define RED     "\033[31m"	/* Red */
 
 void M2R() {
+
+cout<<BLUE<<"  _______  _     _  _______  ______   _   ______  ______  _______ "<<"\n";
+cout<<BLUE<<" (_______)(_)   (_)(_______)(_____ \\ | | / _____)/ _____)(_______)"<<"\n";
+cout<<BLUE<<"  _        _______  _______  _____) )| |( (____ ( (____   _______ "<<"\n";
+cout<<BLUE<<" | |      |  ___  ||  ___  ||  __  / | | \\____ \\ \\____ \\ |  ___  |"<<"\n";
+cout<<BLUE<<" | |_____ | |   | || |   | || |  \\ \\ | | _____) )_____) )| |   | |"<<"\n";
+cout<<BLUE<<"  \\______)|_|   |_||_|   |_||_|   |_||_|(______/(______/ |_|   |_|"<<"\n"<<RESET;
+
 
   TDatime now; // date and time
   now.Print(); // print date and time
   string mystring;
-  cout << "Enter the name of the MIDAS file you want to convert to root" << "\n" ;
+  cout <<GREEN<< "Enter the name of the MIDAS file you want to convert to root" << "\n" << RESET;
   cin >> mystring;
 
   TStopwatch StopWatch; //stopwatch to keep on track of efficiency
@@ -45,11 +55,13 @@ void M2R() {
 
   std::ifstream is (mystring.c_str(), std::ifstream::binary); //MIDAS binary file source
 
-if (is) { // this if is just to check if the file exists.
-  TFile f("data.root","UPDATE"); //ROOT file
-  TTree *data = new TTree("data","Tree data"); //Tree to store the Data
-  data->Write("data.root",TObject::kOverwrite); // Making the root file
+  // This string are just to name the new root file the same way as the MIDAS file.
+  string rootext(".root"); //
+  string RF = mystring +rootext;
 
+if (is) { // this if is just to check if the file exists.
+  TFile f(RF.c_str(),"UPDATE"); //ROOT file, RF.c_str() makes the new file to have the ORIGNAL.root as name
+  TTree *data = new TTree(mystring.c_str():,"Tree data"); //Tree to store the Data in a tree with the same name as the original run
   // data collectors variables
   char buffer[3]; //the file will be read to here in charactes
   Int_t pre_event [4]; // make them integers
@@ -71,15 +83,15 @@ if (is) { // this if is just to check if the file exists.
   Float_t Z1[200]; // 200 is more than enough to allocate, you can add more if required.
   memset(Z1, 0, sizeof(Z1)); // Set Z1 to zero
   //Branches to store the data
-  data->Branch("M_part", &Mult, "Mult/I");
+  data->Branch("M_part", &Mult, "Mult/I"); // This makes variable lenght branch, Mult comes from multiplicity
   data->Branch("Z_event", Z1, "Z1[Mult]/F");
   // Histograms
-  TH1F *h1 = new TH1F("Hits", "Number of detectos involved in each event", 200, 0, 200);
+  TH1F *h1 = new TH1F("Hits", "Number of detectos involved in each event", 200, 0, 200); //Distribution of #of active detectos in each event
   // get length of file:
   is.seekg (0, is.end); // go to the end of file
   int data_length = is.tellg(); // how long is the file in Bytes
   is.seekg (0, is.beg); // position to the start of file
-  cout << "Reading " << data_length << " characters... \n";
+  cout <<RED<< "Reading " << data_length << " characters... \n"<<RESET;
 
     ////////////////////////////
     //Reading the actual data///
@@ -98,9 +110,8 @@ if (is) { // this if is just to check if the file exists.
             a=int(((pre_event[2]*256)+pre_event[3])/4)-1; // How many detectos were involved in the hit
             h1->Fill(a);
             // this loop reads all the channels and amplitudes involved in an event
-            if (Ecount< 10) {
-              printf("Event: %i Channels: %i \n",Ecount, a );
-            }
+            if (Ecount< 5) {printf("Event: %i Channels: %i \n",Ecount, a );}
+
             for (size_t k = 0; k < a; k++) {
                     blu=k; //dumie variable for the loop
                     is.read(buffer,4); // read the event
@@ -124,11 +135,11 @@ if (is) { // this if is just to check if the file exists.
     }
   is.close(); //close the file
   f.Write("",TObject::kOverwrite); // DO NOT forget to actually write the ROOT File
-  printf("Events %i\n",Ecount );
-  printf("Blocks %i\n",Bcount );
-  printf("Channels on the experiment: %i \n", detectors );
+  cout <<YELLOW<< "Events" << Ecount << "\n";
+  cout <<YELLOW<< "Blocks" << Bcount << "\n";
+  cout <<YELLOW << "Channels on the experiment: " << detectors+1 << "\n"; //Plus one because index starts at 0
   StopWatch.Stop(); // Measure time for efficiency
-  cout << "Total Real Time: "<< StopWatch.RealTime() << "s" << endl;
+  cout << GREEN << "Total Real Time: "<< StopWatch.RealTime() << "s" << endl;
 }
 else{cout<< "error opening the file\n";}
 }

@@ -224,3 +224,14 @@ for (Int_t iii=0;iii<nentries; iii++) {
 Double_t binx=h_x->GetBinContent(iii);
 myhist[xx]->SetBinContent(iii,binx);
 }
+
+string mystring
+
+std::string firstlevel ("com");
+  std::string secondlevel ("cplusplus");
+  std::string scheme ("http://");
+  std::string hostname;
+  std::string url;
+
+  hostname = "www." + secondlevel + '.' + firstlevel;
+  url = scheme + hostname;
