@@ -72,7 +72,7 @@ cout<<"                    "<<BLUE<<"  |_|   |_||_______)|_|   |_|"<<"\n"<<RESET
 
 if (is) { // this if is just to check if the file exists.
   TFile f(RF.c_str(),"UPDATE"); //ROOT file, RF.c_str() makes the new file to have the ORIGNAL.root as name
-  TTree *data = new TTree(mystring.c_str():,"Tree data"); //Tree to store the Data in a tree with the same name as the original run
+  TTree *data = new TTree(mystring.c_str(),"Tree data"); //Tree to store the Data in a tree with the same name as the original run
   // data collectors variables
   char buffer[3]; //the file will be read to here in charactes
   Int_t pre_event [4]; // make them integers
@@ -98,8 +98,8 @@ if (is) { // this if is just to check if the file exists.
   data->Branch("Z_event", Z1, "Z1[Mult]/F");
   // Histograms
   TH1F *h1 = new TH1F("Hits", "Number of detectos involved in each event", 200, 0, 200); //Distribution of #of active detectos in each event
-  TH1F *hadc[200];
-  for(int w=0;w<200;w++) {
+  TH1F *hadc[90];
+  for(int w=0;w<90;w++) {
 		ostringstream name;
 		name<<"hadc"<<w;
 		hadc[w] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
