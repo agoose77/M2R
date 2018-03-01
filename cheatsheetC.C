@@ -6,6 +6,12 @@ ROOT resourcers
 
 ///// branches of arrays WORKING multiplicity
 
+BASH
+
+paste spec_000.txt spec_001.txt | column -s $'\t' -t >> new.txt
+cat new.txt | cut -f1,3 > newdeco.txt
+
+
 .q
 rm data.root
 root -l
