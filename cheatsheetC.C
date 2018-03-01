@@ -249,3 +249,18 @@ TH1F *myhist[200];
 char *histname = new char[10];
 sprintf(histname, "h_x_%d",xx);
 myhist[xx]=new TH1F(histname,"",100,-0.25,0.25);
+
+
+
+////////
+
+
+for(int w=0;w<200;w++) {
+  ostringstream name;
+  name<<"hadc"<<w;
+  hadc[w] = new TH1F(name.str().c_str(),name.str().c_str(),4096,0,4096.);
+}
+
+for(int w=50;w<200;w++) {
+   detele hadc[w]
+}
