@@ -39,12 +39,11 @@ when asked, input the MIDAS file you wish to convert
 
 void M2R() {
 
-cout<<BLUE<<"  _______  _     _  _______  ______   _   ______  ______  _______ "<<"\n";
-cout<<BLUE<<" (_______)(_)   (_)(_______)(_____ \\ | | / _____)/ _____)(_______)"<<"\n";
-cout<<BLUE<<"  _        _______  _______  _____) )| |( (____ ( (____   _______ "<<"\n";
-cout<<BLUE<<" | |      |  ___  ||  ___  ||  __  / | | \\____ \\ \\____ \\ |  ___  |"<<"\n";
-cout<<BLUE<<" | |_____ | |   | || |   | || |  \\ \\ | | _____) )_____) )| |   | |"<<"\n";
-cout<<BLUE<<"  \\______)|_|   |_||_|   |_||_|   |_||_|(______/(______/ |_|   |_|"<<"\n"<<RESET;
+//cout<<BLUE<<" (_______)(_)   (_)(_______)(_____ \\ | | / _____)/ _____)(_______)"<<"\n";
+//cout<<BLUE<<"  _        _______  _______  _____) )| |( (____ ( (____   _______ "<<"\n";
+//cout<<BLUE<<" | |      |  ___  ||  ___  ||  __  / | | \\____ \\ \\____ \\ |  ___  |"<<"\n";
+//cout<<BLUE<<" | |_____ | |   | || |   | || |  \\ \\ | | _____) )_____) )| |   | |"<<"\n";
+//cout<<BLUE<<"  \\______)|_|   |_||_|   |_||_|   |_||_|(______/(______/ |_|   |_|"<<"\n"<<RESET;
 
 cout<<"                    "<<BLUE<<"   _______  ______   ______  "<<"\n";
 cout<<"                    "<<BLUE<<"  (_______)(_____ \\ (_____ \\ "<<"\n";
@@ -155,7 +154,7 @@ if (is) { // this if is just to check if the file exists.
     }
   is.close(); //close the file
   ///Delete unused Histograms
-  for(int ii=detectors;ii<200;ii++) {delete hadc[ii];}
+  for(int ii=detectors+1;ii<200;ii++) {delete hadc[ii];}
 
   f.Write("",TObject::kOverwrite); // DO NOT forget to actually write the ROOT File
   cout <<YELLOW<< "Events: " << Ecount << "\n";
