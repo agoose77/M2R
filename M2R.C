@@ -124,6 +124,7 @@ if (is) { // this if is just to check if the file exists.
           if(pre_event[0]==69 && pre_event[1]==66){Bcount++;} //block counter
           //check if event
           if (pre_event[0]==255 &&  pre_event[1]==255){
+            Mult=0;
             Ecount++; // event counter
             a=int(((pre_event[2]*256)+pre_event[3])/4)-1; // How many detectos were involved in the hit
             h1->Fill(a);
@@ -143,11 +144,9 @@ if (is) { // this if is just to check if the file exists.
           /*The way the data is stored(in order, from the chanel zero to
           the last channel with hit on it) allows to have the
           multiplicity of the events to be equal to the last ADC number*/
-          Mult=adc_num;
-
+          Mult=adc_num+1;
           // How many detectors were involved in the experiment if the quantity is known this step is removable
           if (Mult>detectors) {detectors=Mult;}
-
           data->Fill(); // Data dumping into the Branch
           memset(Z1, 0, sizeof(Z1)); // reset array to zero
          }
