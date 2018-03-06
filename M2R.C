@@ -35,8 +35,6 @@ to format the histogram. More information can be found in the cern root for begi
 #include "TTree.h"      // Make trees
 #include "TObject.h"    // Write objects
 #include <TH1.h>
-#include <TH2.h>
-#include "TCanvas.h"
 
 //Colours for format and visuals
 #define RESET   "\033[0m"
@@ -120,9 +118,9 @@ if (is) { // this if is just to check if the file exists.
   is.seekg (0, is.beg); // position to the start of file
   cout <<RED<< "Reading " << data_length << " characters... \n"<<RESET;
 
-    ////////////////////////////
-    //Reading the actual data///
-    ////////////////////////////
+                          /////////////////////
+                          //Reading the  data//
+                          /////////////////////
 
     while (is) {  // while the data file is not at EOF
 
@@ -152,7 +150,8 @@ if (is) { // this if is just to check if the file exists.
                     }
           /*The way the data is stored(in order, from the chanel zero to
           the last channel with hit on it) allows to have the
-          multiplicity of the events to be equal to the last ADC number*/
+          multiplicity of the events to be equal to the last ADC number
+          a one needs to be added becasue the multiplicity starts at 1 */
           Mult=adc_num+1;
           // How many detectors were involved in the experiment if the quantity is known this step is removable
           if (Mult>detectors) {detectors=Mult;}
@@ -162,7 +161,7 @@ if (is) { // this if is just to check if the file exists.
     }
   is.close(); //close the file
   ///Delete unused Histograms
-  for(int ii=detectors+1;ii<200;ii++) {delete hadc[ii];}
+  for(int ii=detectors;ii<200;ii++) {delete hadc[ii];}
 
   f.Write("",TObject::kOverwrite); // DO NOT forget to actually write the ROOT File
   cout <<YELLOW<< "Events: " << Ecount << "\n";
