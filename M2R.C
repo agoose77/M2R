@@ -17,6 +17,15 @@ type in terminal, -l option is to NOT show the root image at start
 $ root -l
 root[0] .x M2R.C
 when asked, input the MIDAS file you wish to convert
+
+To load the root file you just create,type.
+
+$ root -l yourfile.root
+
+The tree have two branches, one with the multiplicity and the other one with the amplitude, if you wish to draw the spectra from the
+44 channel, you need to type: Tree->Draw("Z_event[44]>>(4096,0,4096)","Z_event[44]>0","") this draws the 44 channel spectra in a histogram with
+4096 bins, that goes from 0 to 4096, in the second "" you can put conditions as well correlation with another channel. and the last "" can be use
+to format the histogram. More information can be found in the cern root for beginers guide http://caeinfo.in2p3.fr/root/Formation/en/
 */
 
 #include <iostream>     // std::cout
