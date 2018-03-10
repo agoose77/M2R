@@ -264,3 +264,16 @@ for(int w=0;w<200;w++) {
 for(int w=50;w<200;w++) {
    detele hadc[w]
 }
+
+TFile *myfile= new TFile("R175_0.root","READ");
+Ttree *tree= (Ttree* myfile)->Get("R175_0");
+tree->SetBranchAddress("totE",&totE);
+tree->SetBranchAddress("pixel",&pixel);
+
+entries= tree->GetEntries();
+for (int i=0; i<entries; i++)
+{
+tree->GetEntry(i);//            <-----     !!!!!!!!!!!!!
+h->Fill(pixel);
+h1->Fil(totE);
+}
