@@ -15,12 +15,37 @@ $ sudo apt-get install root-system
 
 type in terminal, -l option is to NOT show the root image at start
 $ root -l
-root[0] .x M2RV2.C
+root[0] .x M2RV2.C++ // this compiles the for improved results
 when asked, input the MIDAS file you wish to convert
 
 To load the root file you just create,type.
+The data is stored in this way, making it very fast to read, it is very similar to MIDAS output, and it keeps
+the file size small.
+$ root  yourfile.root
+root [1] data->Show(0)
+======> EVENT:0
+ emult           = 3
+ time            = 1
+ eadc            = 43,
+                  63, 80
+ eampl           = 326,
+                  379, 398
+root [2] data->Show(1)
+======> EVENT:1
+ emult           = 2
+ time            = 2
+ eadc            = 42,
+                  57
+ eampl           = 865,
+                  912
+root [3] data->Show(5)
+======> EVENT:5
+ emult           = 1
+ time            = 6
+ eadc            = 66
+ eampl           = 71
 
-$ root -l yourfile.root
+
 
 */
 
@@ -30,9 +55,9 @@ $ root -l yourfile.root
 #include "TFile.h"      //Write root files
 #include "TTree.h"      // Make trees
 #include "TObject.h"    // Write objects
-#include <TH1.h>
-#include <TStopwatch.h>
-#include <sstream>
+#include <TH1.h>        //  1D histograms
+#include <TStopwatch.h>  // stopwatch for time
+#include <sstream>      // for ostringstream
 
 //Colours for format and visuals
 #define RESET   "\033[0m"
@@ -63,8 +88,8 @@ cout<<"                    "<<BLUE<<"  |_|   |_||_______)|_|   |_|"<<"\n"<<RESET
   now.Print(); // print date and time
   string mystring; //string to store the name of the file
   cout <<GREEN<< "Enter the name of the MIDAS file you want to convert to root" << "\n" << RESET;
-  //cin >> mystring; // user input file name
-  mystring = "R162_0";
+  cin >> mystring; // user input file name
+
   TStopwatch StopWatch; //stopwatch to keep on track of efficiency
   StopWatch.Start(); // start of the stopwatch
 
@@ -95,18 +120,18 @@ if (is) { // this if is just to check if the file exists.
   Int_t time=0;
   Int_t emult=0;
   ///NUMBER OT DETECTORS TO ALLOCATE
-  Int_t eadc[100];
-  Int_t eampl[100];
+  Int_t eadc[200];
+  Int_t eampl[200];
   //Branches to store the data
-  data->Branch("emult", &emult, "emult/I");
+  data->Branch("emult", &emult, "emult/I");  // Multiplicity of the event
   data->Branch("time", &time, "time/I"); // it is not really time is just a vairable to keep track on the evolution of the events
-  data->Branch("eadc", eadc, "eadc[emult]/I");
-  data->Branch("eampl",eampl,"eampl[emult]/I");
+  data->Branch("eadc", eadc, "eadc[emult]/I"); // Branch with the adc number
+  data->Branch("eampl",eampl,"eampl[emult]/I"); // amplitude number
 
   // Histograms
   TH1I *h1 = new TH1I("Hits", "Number of detectos involved in each event", 100, 0, 100); //Distribution of #of active detectos in each event
-  TH1I *hadc[100];
-  for(int w=0;w<100;w++) {
+  TH1I *hadc[200];
+  for(int w=0;w<200;w++) {
 		std::ostringstream name;
 		name<<"hadc"<<w;
     name<< mystring;
@@ -122,11 +147,10 @@ if (is) { // this if is just to check if the file exists.
                           /////////////////////
                           //Reading the  data//
                           /////////////////////
-
     while (is) {  // while the data file is not at EOF
         //read 4 bytes at the time
         is.read(buffer,4);
-        for (int i = 0; i <= 3; i++) {pre_event[i]=(int)(unsigned char)buffer[i];} // turn read chars into ints
+        for (int i = 0; i <= 3; i++) {pre_event[i]=(unsigned char)buffer[i];} // turn read chars into ints
           //check if Block, start of header
           if(pre_event[0]==69 && pre_event[1]==66){Bcount++;} //block counter
           //check if event
@@ -137,26 +161,31 @@ if (is) { // this if is just to check if the file exists.
             h1->Fill(a);
             emult=a;
             // this loop reads all the channels and amplitudes involved in an event
-            if (Ecount< 10) {
+            if (Ecount< 100) {
               printf("Event: %i Channels: %i \n",Ecount, a );
             }
             for (Int_t k = 0; k < a; k++) {
                       is.read(buffer,4); // read the event
-                      for (int r = 0; r <= 3; r++) {pre_event[r]=(int)(unsigned char)buffer[r];}// turn read chars into ints
+                      for (int r = 0; r <= 3; r++) {pre_event[r]=(unsigned char)buffer[r];}// turn read chars into ints
                       adc_num = int(32*(pre_event[1]-1)+pre_event[0]); // Get ADC num
                       ampl = int((256*(pre_event[2]))+pre_event[3]); // Get Amplitude
-                      eadc[k]=adc_num;
-                      eampl[k]=ampl;
-                      hadc[adc_num]->Fill(ampl);
+                      eadc[k]=adc_num; // saves the adc number in each hit in the event
+                      eampl[k]=ampl; // saves the ampl number in each hit in the event
+                      if (adc_num>82) {
+                        cout <<RED<< "ADC ALERT!" << RESET << endl;
+                      }
+                      hadc[adc_num]->Fill(ampl); // hitograms for quick view
+
                         }
-                      if (Ecount< 10) {
+                      if (Ecount< 100) {
+
                         printf("Multiplicity is: %i\n",emult );
                         for (Int_t y = 0; y < emult; y++) {
                           printf("adc: %i ampl: %i\n",eadc[y],eampl[y]);
                         }
                       }
-            time=Ecount;
-            Mult=adc_num+1;
+            time=Ecount; // keeps track of "time" of each event
+            Mult=adc_num+1; // Just to know the number of the detectors involved
             // How many detectors were involved in the experiment if the quantity is known this step is removable
             if (Mult>detectors) {detectors=Mult;}
             data->Fill(); // Data dumping into the Branch
@@ -164,11 +193,11 @@ if (is) { // this if is just to check if the file exists.
     }
   is.close(); //close the file
   ///smooth Histograms
-  for(int ii=0;ii<detectors;ii++) {
+ for(int ii=0;ii<detectors;ii++) {
     hadc[ii]->Smooth();
   }
   ///Delete unused Histograms
-  for(int ii=detectors;ii<100;ii++) {delete hadc[ii];}
+  for(int ii=detectors;ii<200;ii++) {delete hadc[ii];}
 
   f.Write("",TObject::kOverwrite); // DO NOT forget to actually write the ROOT File
   cout <<YELLOW<< "Events: " << Ecount << "\n";
