@@ -32,8 +32,8 @@ if (f.IsOpen()) { // checks if the root file is open
   Int_t t=0;
 
   tree->SetBranchAddress("emult", &emult); // this is to direct the read variables into a virutal branch
-  tree->SetBranchAddress("eadc", eadc);
-  tree->SetBranchAddress("eampl",eampl);
+  tree->SetBranchAddress("eadc", eadc);// this is without the & because eadc is an array
+  tree->SetBranchAddress("eampl",eampl);// this is without the & because eampl is an array
   TH2* mapleft = new TH2F("mapleft", "Map left", 165, 0, 49.50 ,165, 0, 49.50); // histograms declaration for position,in mm 165 bins from 0 to 49.5 mm
   TH2* mapright = new TH2F("mapright", "Map right", 165, 0, 49.50 ,165, 0, 49.50);
   TH1* angleft = new TH1F("angleft","Angle left",300,2,3.5); // angles of events from each dssd in rads
