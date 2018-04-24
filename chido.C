@@ -7,7 +7,7 @@
 #include "TH2.h"        //  2D histograms
 #include "TStopwatch.h"  // stopwatch for time
 #include <sstream>      // for ostringstream
-#include <stdlib.h>     // srand, rand 
+#include <stdlib.h>     // srand, rand
 #include <iostream>     // std::cout
 #include <fstream>      // std::ifstream
 int imap(int);
@@ -27,9 +27,7 @@ if (f.IsOpen()) { // checks if the root file is open
   TTree *tree = (TTree*)f.Get("data"); // "grabs" the tree from the root file and puts in a new direction
   Int_t eadc[100]; // allocate the space for the adc
   Int_t eampl[100]; // allocate the space for the ampl
-  Int_t Mult=0;
-  Int_t time=0;
-  Int_t emult=0;
+  Int_t emult=0;// start Multiplicity variables
   Int_t n_entries = tree->GetEntries(); // number of entries
   Int_t t=0;
 
