@@ -48,7 +48,7 @@ root [3] data->Show(5)
 
 
 */
-int imap(int);
+
 
 #include <iostream>     // std::cout
 #include <fstream>      // std::ifstream
@@ -89,8 +89,8 @@ cout<<"                    "<<BLUE<<"  |_|   |_||_______)|_|   |_|"<<"\n"<<RESET
   now.Print(); // print date and time
   string mystring; //string to store the name of the file
   cout <<GREEN<< "Enter the name of the MIDAS file you want to convert to root" << "\n" << RESET;
-  //cin >> mystring; // user input file name
-  mystring = "R175_0";
+  cin >> mystring; // user input file name
+//  mystring = "R175_0";
   TStopwatch StopWatch; //stopwatch to keep on track of efficiency
   StopWatch.Start(); // start of the stopwatch
 
@@ -118,16 +118,15 @@ if (is) { // this if is just to check if the file exists.
   Int_t detectors=0;
   // Multiplicity
   Int_t Mult=0;
-  Int_t time=0;
   Int_t emult=0;
   ///NUMBER OT DETECTORS TO ALLOCATE
   Int_t eadc[200];
   Int_t eampl[200];
   //Branches to store the data
   data->Branch("emult", &emult, "emult/I");  // Multiplicity of the event
-  data->Branch("time", &time, "time/I"); // it is not really time is just a vairable to keep track on the evolution of the events
   data->Branch("eadc", eadc, "eadc[emult]/I"); // Branch with the adc number
   data->Branch("eampl",eampl,"eampl[emult]/I"); // amplitude number
+
 
   // Histograms
   TH1I *h1 = new TH1I("Hits", "Number of detectos involved in each event", 100, 0, 100); //Distribution of #of active detectos in each event
@@ -168,26 +167,20 @@ if (is) { // this if is just to check if the file exists.
             for (Int_t k = 0; k < a; k++) {
                       is.read(buffer,4); // read the event
                       for (int r = 0; r <= 3; r++) {pre_event[r]=(unsigned char)buffer[r];}// turn read chars into ints
-                      adc_num = imap(int(32*(pre_event[1]-1)+pre_event[0])); // Get ADC num
+                      adc_num = int(32*(pre_event[1]-1)+pre_event[0]); // Get ADC num
                       ampl = int((256*(pre_event[2]))+pre_event[3]); // Get Amplitude
                       eadc[k]=adc_num; // saves the adc number in each hit in the event
                       eampl[k]=ampl; // saves the ampl number in each hit in the event
-                      if (adc_num>82) {
-                        cout <<RED<< "ADC ALERT!" << RESET << endl;
-                      }
                       hadc[adc_num]->Fill(ampl); // hitograms for quick view
 
                         }
                       if (Ecount< 5) {
-
                         printf("Multiplicity is: %i\n",emult );
                         for (Int_t y = 0; y < emult; y++) {
                           printf("adc: %i ampl: %i\n",eadc[y],eampl[y]);
                         }
                       }
-            time=Ecount; // keeps track of "time" of each event
             Mult=adc_num+1; // Just to know the number of the detectors involved
-            // How many detectors were involved in the experiment if the quantity is known this step is removable
             if (Mult>detectors) {detectors=Mult;}
             data->Fill(); // Data dumping into the Branch
          }
@@ -208,18 +201,4 @@ if (is) { // this if is just to check if the file exists.
   cout << GREEN << "Total Real Time: "<< StopWatch.RealTime() << "s" << endl;
 }
 else{cout<< "error opening the file\n";}
-}
-//IMAP for thin DSSD 
-Int_t imap(Int_t a)
-{
-  Int_t C_Chn=a;
-  if (a>=0 && a<=7) {C_Chn=a+8;} //front right
-  if (a>=8 && a<=15) {C_Chn=15-a;}// front right
-  if (a>=16 && a<=23) {C_Chn=a+7;} //back right
-  if (a>=24 && a<=31) {C_Chn=46-a;} // back right
-  if (a>=32 && a<=39) {C_Chn=71-a;} // front left
-  if (a>=40 && a<=47) {C_Chn=a;} // front left
-  if (a>=48 && a<=55) {C_Chn=a+8;} //back left
-  if (a>=56 && a<=63) {C_Chn=111-a;} // back left
-  return C_Chn;
 }
