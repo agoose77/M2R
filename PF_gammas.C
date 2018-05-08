@@ -37,34 +37,35 @@ string mystring;
   energies[3]=4.438;
   TH1I *histopeaks[200];
   TH1I *histopeakscalib[200];
+  TH1I *histopeaks_background[200];
 
   for(int i=ich;i<=fch;i++){
       Double_t par0[3]={0};
       Double_t par1[3]={0};
       Double_t par2[3]={0};
       Double_t par3[3]={0};
-
       Double_t parl1[2]={0};
       Double_t centroids[4]={0};
+
       ostringstream name;
       name<<"hadc"<<i<< mystring;
       f->GetObject(name.str().c_str(),histopeaks[i]);
       histopeaks[i]->Draw();
       histopeaks[i]->ShowBackground();
-      TH1I h = *histopeaks[i] - *histopeaks[i]_background;
+      TH1I h = *histopeaks[i] - *histopeaks_background[i];
       TH1I *rest = &h;
       rest->GetXaxis()->SetRangeUser(180,4096);
       rest->Smooth();
-      TSpectrum *rest = new TSpectrum(peakstofind);
+      TSpectrum *s = new TSpectrum(peakstofind);
     //  const int npeaks = s->Search(histopeaks[i],2,"",0.10 ); // for alphas dssd
-      const int npeaks = s->Search(histopeaks[i],5,"",0.05);// for gammas labr3
+      const int npeaks = s->Search(rest,5,"",0.05);// for gammas labr3
       float *xpeaks = s->GetPositionX();
 
       cout << "channel " << i <<": " <<xpeaks[0]<<"," << xpeaks[1]<<"," << xpeaks[2] << "," << xpeaks[3] << endl;
-      TF1 *g0    = new TF1("g1","gaus",xpeaks[0]-10,xpeaks[0]+10); // 200 for alphas, 20 for gammas
-      TF1 *g1    = new TF1("g2","gaus",xpeaks[1]-10,xpeaks[1]+10);
-      TF1 *g2    = new TF1("g3","gaus",xpeaks[2]-10,xpeaks[2]+10);
-      TF1 *g3    = new TF1("g3","gaus",xpeaks[3]-10,xpeaks[3]+10);
+      TF1 *g0    = new TF1("g1","gaus",xpeaks[0]-50,xpeaks[0]+50); // 200 for alphas, 20 for gammas
+      TF1 *g1    = new TF1("g2","gaus",xpeaks[1]-50,xpeaks[1]+50);
+      TF1 *g2    = new TF1("g3","gaus",xpeaks[2]-50,xpeaks[2]+50);
+      TF1 *g3    = new TF1("g3","gaus",xpeaks[3]-50,xpeaks[3]+50);
     //https://root.cern.ch/root/html534/guides/users-guide/FittingHistograms.html
       histopeaks[i]->Fit(g0,"QR+");
       histopeaks[i]->Fit(g1,"QR");
@@ -86,12 +87,14 @@ string mystring;
       TF1 *l1    = new TF1("l1","pol1",centroids[0]-10,centroids[2]+10);
       gr->Fit("l1","");
       l1->GetParameters(&parl1[0]);
-      cout<< i << "\t" <<parl1[1] << "\t" << parl1[0] << endl;
+      cout<< i << "\t" <<parl1[0] << "\t" << parl1[1] << endl;
       //myfiletxt<< i << "\t" <<parl1[1] << "\t" << parl1[0] << endl;
       //https://root.cern.ch/doc/master/classTH1.html#aff6520fdae026334bf34fa1800946790
-       delete rest;
+
+       cout << "check " << i << endl;
     }
  delete s;
+ //delete rest;
  delete[] histopeaks;
 
 }

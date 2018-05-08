@@ -25,19 +25,12 @@ void PF() {
   f->Print();
   Int_t ich;
   Int_t fch;
-  //gammas
-//  ich=64;
-//  fch=73;
-//  alphas
+
   ich=0;
   fch=63;
   Int_t peakstofind=3;
   Double_t energies[3];
-  //gammas
-/* energies[0]=667;
- energies[1]=1173;
- energies[2]=1332;
-  */
+
  //alphas
   energies[0]=5.1566;
   energies[1]=5.4856;
@@ -86,12 +79,7 @@ void PF() {
       //https://root.cern.ch/doc/master/classTH1.html#aff6520fdae026334bf34fa1800946790
   //    cout << par1[1] << ", "<< par2[1]<< ", " << par3[1] << endl;
     }
-  /*  histopeaks[ich]->Draw();
-    for (size_t G = ich; G <= fch; G++) {
-      histopeaks[G]->SetLineColor(G-63);
-      histopeaks[G]->Draw("SAME");
-    }
-*/
+
 
  delete s;
  delete[] histopeaks;

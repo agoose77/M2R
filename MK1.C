@@ -1,4 +1,3 @@
-
 #include "TFile.h"      //Write root files
 #include "TTree.h"      // Make trees
 #include "TObject.h"    // Write objects
@@ -63,7 +62,7 @@ if (f.IsOpen()) { // checks if the root file is open
   Int_t n_entries = tree->GetEntries(); // number of entries
   Int_t t=0;
   Int_t hitsdssd,hitslabr3;
-  Float_t treshold=0.000003;// in MeV
+  Float_t treshold=0.04;// in MeV
 
   tree->SetBranchAddress("emult", &emult); // this is to direct the read variables into a virutal branch
   tree->SetBranchAddress("eadc", eadc);// this is without the & because eadc is an array
@@ -132,18 +131,19 @@ if (f.IsOpen()) { // checks if the root file is open
                      xlE = (eampl[Epos[0]]*calibp0[Epos[0]])+calibp1[Epos[0]]; // amplitude of the back strip
                      xli = (3*(xl+(rand()/div)))-24.75; // calculates x
                      yli = (3*(yl+(rand()/div)))-24.75; // calculates y
-                     mapleft->Fill(xli,yli);
-                     angleft->Fill(OmegaT(xli,yli));
+
                   }
 
                   if (hitleft==2 && ylE-xlE<treshold) {
                     yA = (eampl[Epos[1]]*calibp0[Epos[1]])+calibp1[Epos[1]];// auxiliar ylE in case the double alpha hit is in the same detector
                     xA = (eampl[Epos[0]]*calibp0[Epos[0]])+calibp1[Epos[0]]; // auxiliar ylE in case the double alpha hit is in the same detector
-                      if (yA-xA<0.30) {
+                      if (yA-xA<treshold) {
                         xla = (3*(xl+(rand()/div)))-24.75; // calculates x
                         yla = (3*(yl+(rand()/div)))-24.75; // calculates y
                         omegaA = OmegaT(xla,yla); // omega from the positions
                         mapleft->Fill(xla,yla);
+                        mapleft->Fill(xli,yli);
+                        angleft->Fill(OmegaT(xli,yli));
                         angleft->Fill(OmegaT(xla,yla));
                         Float_t P1 = p_alpha(ylE); // momentum for the  ylE energy, fisrt hit
                         Float_t P2 = p_alpha(yA); //  momentum for the second hit
@@ -167,26 +167,26 @@ if (f.IsOpen()) { // checks if the root file is open
                     xrE = (eampl[Epos[2]]*calibp0[Epos[2]])+calibp1[Epos[2]]; // amplitude of the back strip
                     xri = (3*(xr+(rand()/div)))-24.75; // calculates x
                     yri = (3*(yr+(rand()/div)))-24.75; // calculates y
-                    mapright->Fill(xri,yri);
-                    angright->Fill(OmegaT(xri,yri));
                   }
                   if (hitright==2 && yrE-xrE<treshold ) {
                     yA = (eampl[Epos[3]]*calibp0[Epos[3]])+calibp1[Epos[3]];// auxiliar yrE in case the double alpha hit is in the same detector
                     xA = (eampl[Epos[2]]*calibp0[Epos[2]])+calibp1[Epos[2]]; // auxiliar yrE in case the double alpha hit is in the same detector
-                    if (yA-xA<0.30) {
+                    if (yA-xA<treshold) {
                       xra = (3*(xr+(rand()/div)))-24.75; // calculates x
                       yra = (3*(yr+(rand()/div)))-24.75; // calculates y
                       omegaA = OmegaT(xra,yra);
                       mapleft->Fill(xra,yra);
+                      mapright->Fill(xri,yri);
+                      angright->Fill(OmegaT(xri,yri));
                       angleft->Fill(OmegaT(xra,yra));
                       Float_t P1 = p_alpha(yrE);
                       Float_t P2 = p_alpha(yA);
                       Float_t P1_comp[3]={P1*sin(Omega_X(xri))*cos(Omega_Y(yri)), P1*cos(Omega_Y(yri)), P1*cos(Omega_X(xri))*cos(Omega_Y(yri))};
                       Float_t P2_comp[3]={P2*sin(Omega_X(xra))*cos(Omega_Y(yra)), P2*cos(Omega_Y(yra)), P2*cos(Omega_X(xra))*cos(Omega_Y(yra))};
                       Float_t P_Be=0;
-                      for (size_t g = 0; g < 3; g++) {P_Be+=pow(P1_comp[g]+P2_comp[g],2);}
+                      for (size_t g = 0; g < 3; g++) {P_Be+=pow(P1_comp[g]+P2_comp[g],2.0);}
                       Float_t E_Be=P_Be/(2*8.005)-yA-yrE;
-                      Be8->Fill(E_Be);
+                      Be8->Fill(E_Be/10);
                       E1vsE2->Fill(yrE,yA);
                       alphatheta->Fill(OmegaT(xra,yra),yrE);
                       //alphatheta->Fill(omegaA,yA);
@@ -202,7 +202,7 @@ if (f.IsOpen()) { // checks if the root file is open
                       Float_t P_Be=0;
                       for (size_t g = 0; g < 3; g++) {P_Be+=pow(P1_comp[g]+P2_comp[g],2);}
                       Float_t E_Be=P_Be/(2*8.005)-yrE-ylE;
-                      Be8->Fill(E_Be);
+                      Be8->Fill(E_Be/10);
                       E1vsE2->Fill(ylE,yrE);
                       alphatheta->Fill(OmegaT(xli,yli),ylE);
                       alphatheta->Fill(OmegaT(xri,yri),yrE);
