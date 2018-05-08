@@ -63,7 +63,7 @@ if (f.IsOpen()) { // checks if the root file is open
   Int_t n_entries = tree->GetEntries(); // number of entries
   Int_t t=0;
   Int_t hitsdssd,hitslabr3;
-  Float_t treshold=0.0003;
+  Float_t treshold=0.000003;// in MeV
 
   tree->SetBranchAddress("emult", &emult); // this is to direct the read variables into a virutal branch
   tree->SetBranchAddress("eadc", eadc);// this is without the & because eadc is an array
@@ -73,11 +73,11 @@ if (f.IsOpen()) { // checks if the root file is open
 
   TH2* mapleft = new TH2F("mapleft", "Map left", 165, -24.75, 24.75 ,165, -24.75, 24.75); // histograms declaration for position,in mm 165 bins from 0 to 49.5 mm
   TH2* mapright = new TH2F("mapright", "Map right", 165, -24.75, 24.75 ,165, -24.75, 24.75);
-  TH2* alphatheta = new TH2F("alphatheta", "alphatheta",1000,0,30, 350,0,3.5 ); // histograms declaration for position,in mm 165 bins from 0 to 49.5 mm
-  TH2* E1vsE2 = new TH2F("E1vsE2", "E1vsE2", 1000,0,30 ,1000,0,30);
+  TH2* alphatheta = new TH2F("alphatheta", "alphatheta",120,1.8,3,500,0,15); // histograms declaration for position,in mm 165 bins from 0 to 49.5 mm
+  TH2* E1vsE2 = new TH2F("E1vsE2", "E1vsE2", 510,0,17 ,510,0,17);
 
-  TH1* angleft = new TH1F("angleft","Angle left",350,0,3.5); // angles of events from each dssd in rads
-  TH1* angright = new TH1F("angright","Angle right",350,0,3.5);
+  TH1* angleft = new TH1F("angleft","Angle left",700,0,7); // angles of events from each dssd in rads
+  TH1* angright = new TH1F("angright","Angle right",700,0,7);
 
   //Momentum reconstrucion for 8Be
   TH1* Be8 = new TH1F("Be8","Reconstured_Be8",1000,0,30);
@@ -154,8 +154,8 @@ if (f.IsOpen()) { // checks if the root file is open
                         Float_t E_Be=P_Be/(2*8.005)-ylE-yA;// Energy of the Be
                         Be8->Fill(E_Be);
                         E1vsE2->Fill(ylE,yA);
-                        alphatheta->Fill(ylE,OmegaT(xla,yla));
-                        alphatheta->Fill(yA,omegaA);
+                        alphatheta->Fill(OmegaT(xla,yla),ylE);
+                        //alphatheta->Fill(omegaA,yA);
                       }
 
                   }
@@ -188,8 +188,8 @@ if (f.IsOpen()) { // checks if the root file is open
                       Float_t E_Be=P_Be/(2*8.005)-yA-yrE;
                       Be8->Fill(E_Be);
                       E1vsE2->Fill(yrE,yA);
-                      alphatheta->Fill(yrE,OmegaT(xra,yra));
-                      alphatheta->Fill(yA,omegaA);
+                      alphatheta->Fill(OmegaT(xra,yra),yrE);
+                      //alphatheta->Fill(omegaA,yA);
                     }
 
                   }
@@ -204,8 +204,8 @@ if (f.IsOpen()) { // checks if the root file is open
                       Float_t E_Be=P_Be/(2*8.005)-yrE-ylE;
                       Be8->Fill(E_Be);
                       E1vsE2->Fill(ylE,yrE);
-                      alphatheta->Fill(ylE,OmegaT(xla,yla));
-                      alphatheta->Fill(yrE,OmegaT(xra,yra));
+                      alphatheta->Fill(OmegaT(xli,yli),ylE);
+                      alphatheta->Fill(OmegaT(xri,yri),yrE);
 
                     }
           }
@@ -243,14 +243,14 @@ Float_t Omega_Y(Float_t y){
   return omegaY;
 }
 Float_t Omega_X(Float_t x){
-  Float_t omegaX=0.7585+atan(x/45);
+  Float_t omegaX=2.35619+atan(x/45);
   return omegaX;
 }
 Float_t OmegaT(Float_t x, Float_t y) {
   Float_t xrif = x;
   Float_t yrif = y;
   Float_t omegaY=abs(atan(yrif/45)); // calculate the angle of pojection Y of the vector from the target to the dssd hit
-  Float_t omegaX=0.7585+atan(xrif/45);// calculate the angle of pojection X of the vector from the target to the dssd hit
+  Float_t omegaX=2.35619+atan(xrif/45);// calculate the angle of pojection X of the vector from the target to the dssd hit
   Float_t Omega_angle =  abs(acos(cos(omegaX)*cos(omegaY))); // angle respect to Z axis, Z axis is the beam axis
   return Omega_angle;
 }
@@ -259,7 +259,7 @@ Float_t OmegaTT(Float_t tx,Float_t ty){
   return Omega_a;
 }
 Float_t p_alpha(Float_t Energy){
-  Float_t pA = sqrt(2*(4)*Energy);
+  Float_t pA = sqrt(2*(3.7273)*Energy);
   return pA;
 }
 Float_t px_(Float_t P,Float_t thetax,Float_t thetay){

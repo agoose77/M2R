@@ -116,6 +116,7 @@ if (is) { // this if is just to check if the file exists.
   Int_t ampl,Event;
   Int_t adc_num=0;
   Int_t detectors=0;
+  Int_t hitslabr3,hitsdssd;
   // Multiplicity
   Int_t Mult=0;
   Int_t emult=0;
@@ -126,7 +127,8 @@ if (is) { // this if is just to check if the file exists.
   data->Branch("emult", &emult, "emult/I");  // Multiplicity of the event
   data->Branch("eadc", eadc, "eadc[emult]/I"); // Branch with the adc number
   data->Branch("eampl",eampl,"eampl[emult]/I"); // amplitude number
-
+  data->Branch("hitsdssd", &hitsdssd, "hitsdssd/I");  // Multiplicity of the event
+  data->Branch("hitslabr3", &hitslabr3, "hitslabr3/I");  // Multiplicity of the event
 
   // Histograms
   TH1I *h1 = new TH1I("Hits", "Number of detectos involved in each event", 100, 0, 100); //Distribution of #of active detectos in each event
@@ -155,6 +157,8 @@ if (is) { // this if is just to check if the file exists.
           if(pre_event[0]==69 && pre_event[1]==66){Bcount++;} //block counter
           //check if event
           if (pre_event[0]==255 &&  pre_event[1]==255){
+            hitsdssd=0;
+            hitslabr3=0;
             Mult=0;
             Ecount++; // event counter
             a=int(((pre_event[2]*256)+pre_event[3])/4)-1; // How many detectos were involved in the hit
@@ -172,8 +176,9 @@ if (is) { // this if is just to check if the file exists.
                       eadc[k]=adc_num; // saves the adc number in each hit in the event
                       eampl[k]=ampl; // saves the ampl number in each hit in the event
                       hadc[adc_num]->Fill(ampl); // hitograms for quick view
-
-                        }
+                      if (adc_num<=63) {hitsdssd++;} // only for this experiment 2015
+                      if (adc_num>63 && adc_num<=73) {hitslabr3++;}
+            }
                       if (Ecount< 5) {
                         printf("Multiplicity is: %i\n",emult );
                         for (Int_t y = 0; y < emult; y++) {
