@@ -67,6 +67,7 @@ root [3] data->Show(5)
 #define GREEN   "\033[32m"	/* Green */
 #define YELLOW  "\033[33m"	/* Yellow */
 #define RED     "\033[31m"	/* Red */
+Int_t imap(Int_t); // change the maping of thin detectors
 
 void M2RV2() {
 
@@ -90,7 +91,8 @@ cout<<"                    "<<BLUE<<"  |_|   |_||_______)|_|   |_|"<<"\n"<<RESET
   string mystring; //string to store the name of the file
   cout <<GREEN<< "Enter the name of the MIDAS file you want to convert to root" << "\n" << RESET;
   cin >> mystring; // user input file name
-//  mystring = "R175_0";
+  //mystring = "R175_0";
+  cout << GREEN <<"Now analysing: " << mystring << RESET<< endl;
   TStopwatch StopWatch; //stopwatch to keep on track of efficiency
   StopWatch.Start(); // start of the stopwatch
 
@@ -173,13 +175,13 @@ if (is) { // this if is just to check if the file exists.
                       for (int r = 0; r <= 3; r++) {pre_event[r]=(unsigned char)buffer[r];}// turn read chars into ints
                       adc_num = int(32*(pre_event[1]-1)+pre_event[0]); // Get ADC num
                       ampl = int((256*(pre_event[2]))+pre_event[3]); // Get Amplitude
-                      eadc[k]=adc_num; // saves the adc number in each hit in the event
+                      eadc[k]=imap(adc_num); // saves the adc number in each hit in the event
                       eampl[k]=ampl; // saves the ampl number in each hit in the event
-                      hadc[adc_num]->Fill(ampl); // hitograms for quick view
+                      hadc[imap(adc_num)]->Fill(ampl); // hitograms for quick view
                       if (adc_num<=63) {hitsdssd++;} // only for this experiment 2015
                       if (adc_num>63 && adc_num<=73) {hitslabr3++;}
             }
-                      if (Ecount< 5) {
+                      if (Ecount< 3) {
                         printf("Multiplicity is: %i\n",emult );
                         for (Int_t y = 0; y < emult; y++) {
                           printf("adc: %i ampl: %i\n",eadc[y],eampl[y]);
@@ -206,4 +208,21 @@ if (is) { // this if is just to check if the file exists.
   cout << GREEN << "Total Real Time: "<< StopWatch.RealTime() << "s" << endl;
 }
 else{cout<< "error opening the file\n";}
+}
+Int_t imap(Int_t a) // IMAP channel exchange for 2 thin dssds
+{
+Int_t C_Chn=a;
+  if (a<64) {
+    // 0 -> 31 are channels in the left detector
+    if (a>=0 && a<=7) {C_Chn=8+a;}      // Vertical, meaning back of detector
+    if (a>=8 && a<=15) {C_Chn=15-a;}    // Vertical, meaning back of detector
+    if (a>=16 && a<=23) {C_Chn=a+8;}    // Horizontal, meaing front of detecto
+    if (a>=24 && a<=31) {C_Chn=47-a;}   // Horizontal, meaing front of detecto
+    // 32 -> 63 are channels in the right detector
+    if (a>=32 && a<=39) {C_Chn=a+8;}    // Vertical, meaning back of detector
+    if (a>=40 && a<=47) {C_Chn=79-a;}   // Vertical, meaning back of detector
+    if (a>=48 && a<=55) {C_Chn=a+8;}    // Horizontal, meaing front of detector
+    if (a>=56 && a<=63) {C_Chn=111-a;}  // Horizontal, meaing front of detector
+  }
+  return C_Chn;
 }
