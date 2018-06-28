@@ -108,7 +108,7 @@ if (is) { // this if is just to check if the file exists.
   // data collectors variables
   char buffer[4]; //the file will be read to here in charactes safe number is 3
   Int_t pre_event [4]; // make them integers
-
+  const int numadcs=200;
   //Event Count, Block Count, auxiliar variables
   Int_t Ecount=0;
   Int_t Bcount=0;
@@ -123,8 +123,8 @@ if (is) { // this if is just to check if the file exists.
   Int_t Mult=0;
   Int_t emult=0;
   ///NUMBER OT DETECTORS TO ALLOCATE
-  Int_t eadc[200];
-  Int_t eampl[200];
+  Int_t eadc[numadcs];
+  Int_t eampl[numadcs];
   //Branches to store the data
   data->Branch("emult", &emult, "emult/I");  // Multiplicity of the event
   data->Branch("eadc", eadc, "eadc[emult]/I"); // Branch with the adc number
@@ -134,14 +134,13 @@ if (is) { // this if is just to check if the file exists.
 
   // Histograms
   TH1I *h1 = new TH1I("Hits", "Number of detectos involved in each event", 100, 0, 100); //Distribution of #of active detectos in each event
-  TH1I *hadc[200];
-  for(int w=0;w<200;w++) {
+  TH1I *hadc[numadcs];
+  for(int w=0;w<numadcs;w++) {
 		std::ostringstream name;
 		name<<"hadc"<<w;
     name<< mystring;
 		hadc[w] = new TH1I(name.str().c_str(),name.str().c_str(),5000,0,5000);
 	}
-
   // get length of file:
   is.seekg (0, is.end); // go to the end of file
   int data_length = is.tellg(); // how long is the file in Bytes
@@ -175,7 +174,7 @@ if (is) { // this if is just to check if the file exists.
                       for (int r = 0; r <= 3; r++) {pre_event[r]=(unsigned char)buffer[r];}// turn read chars into ints
                       adc_num = int(32*(pre_event[1]-1)+pre_event[0]); // Get ADC num
                       ampl = int((256*(pre_event[2]))+pre_event[3]); // Get Amplitude
-                      eadc[k]=imap(adc_num); // saves the adc number in each hit in the event
+                      eadc[k]=adc_num; // saves the adc number in each hit in the event
                       eampl[k]=ampl; // saves the ampl number in each hit in the event
                       hadc[imap(adc_num)]->Fill(ampl); // hitograms for quick view
                       if (adc_num<=63) {hitsdssd++;} // only for this experiment 2015
@@ -198,7 +197,7 @@ if (is) { // this if is just to check if the file exists.
     hadc[ii]->Smooth();
   }
   ///Delete unused Histograms
-  for(int ii=detectors;ii<200;ii++) {delete hadc[ii];}
+  for(int ii=detectors;ii<numadcs;ii++) {delete hadc[ii];}
 
   f.Write("",TObject::kOverwrite); // DO NOT forget to actually write the ROOT File
   cout <<YELLOW<< "Events: " << Ecount << "\n";
