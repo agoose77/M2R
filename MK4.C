@@ -70,9 +70,9 @@ chain.Add("R185_0.root");
 chain.Add("R186_0.root");
 chain.Add("R187_0.root");
 chain.Add("R188_0.root");*/
-//chain.Add("R189_0.root"); // labr experiment
+chain.Add("R189_0.root"); // labr experiment
+//chain.Add("R178_0.root");// triple alpha
 //chain.Add("R156_0.root");// triple alpha
-chain.Add("R156_0.root");// triple alpha
 //chain.Add("R9_0.root"); //  mask tron course
 TFile f("tchain.root","RECREATE"); // opens the root file
   string mystring;
@@ -91,10 +91,15 @@ TFile f("tchain.root","RECREATE"); // opens the root file
   // carbon 12 from scattered particle
   TH1* Ex_C12       = new TH1F("Ex_C12","Ex_C12",1600,-16,16);
   TH1* E_C12       = new TH1F("E_C12","E_C12",1600,-16,16);
-  TH2F *ADCmap =  new TH2F("ADCmap","ADCmap",100,0,100,800,0,16);// maps of adc
-  //TH2* mapleft   = new TH2F("mapleft", "Map left", 320, -25, 25 ,320, -25, 25); // histograms declaration for position,in mm 165 bins from 0 to 49.5 mm
+  TH2* mapleftC12   = new TH2F("mapleftC12", "mapleftC12", 200, 1.5, 3.5 ,200, -0.6, 0.6 );
+
+
+  //General maps
   TH2* mapleft   = new TH2F("mapleft", "Map left", 200, 1.5, 3.5 ,200, -0.6, 0.6 );
   TH2* mapright  = new TH2F("mapright", "Map right", 200, 1.5, 3.5 ,200, -0.6, 0.6 );
+  TH2F *ADCmap =  new TH2F("ADCmap","ADCmap",100,0,100,800,0,16);// maps of adc
+
+
   TH1F *ceadc[100]; // hitogram array declaration for DSSD
     for(Int_t w=0;w<100;w++) { // loop over the DSSD channels
     std::ostringstream name; // string to call them DSSD_(number)+"root file name
@@ -124,7 +129,7 @@ TFile f("tchain.root","RECREATE"); // opens the root file
     Int_t realchan=0; // clean the real channel for the imap
     Float_t realampl=0; // clean the real amplitude
     realchan = imap(eadc[k]);
-    realampl= (eampl[k]*calibp0[realchan])+calibp1[realchan];
+    realampl= (eampl[k]*calibp0[eadc[k]])+calibp1[eadc[k]];
     ceadc[realchan]->Fill(realampl);
     if (realampl>1) {
       ADCmap->Fill(realchan,realampl);
@@ -153,23 +158,27 @@ TFile f("tchain.root","RECREATE"); // opens the root file
 
   TMath::Sort(int(hitondl/2.0),xle,s_lxe,1);
   TMath::Sort(int(hitondl/2.0),yle,s_lye,1);
-  TMath::Sort(int(hitondl/2.0),xle,s_rxe,1);
-  TMath::Sort(int(hitondl/2.0),yle,s_rye,1);
+
+  TMath::Sort(int(hitondr/2.0),xre,s_rxe,1);
+  TMath::Sort(int(hitondr/2.0),yre,s_rye,1);
+
     for (int i = 0; i < int(hitondl/2); i++) {
       if (abs(s_lxe[i]-s_lye[i])<Ethreshold) {
         mapleft->Fill(xl[s_lxe[i]],yl[s_lye[i]]);
       }
     }
+    cout << "start sorting" << endl;
     for (int i = 0; i < int(hitondr/2); i++) {
       if (abs(s_rxe[i]-s_rye[i])<Ethreshold) {
         mapright->Fill(xr[s_rxe[i]],yr[s_rye[i]]);
+        cout << xre[s_lxe[i]] << " , "<< yre[s_lye[i]] << " hits: "<< hitondr/2 <<endl;
       }
 
     }
 
 
     if (xlc==1 && ylc==1 && xle[0]>1.0 && abs(xle[0]-yle[0])<Ethreshold ) { // one hit on detector 1
-      //mapleft->Fill(xl[0],yl[0]);
+      mapleftC12->Fill(xl[0],yl[0]);
       //cout << "position "<< xl[0] << " , " << yl[0] << endl;
       //cout << "energy "<< xle[0] << " , " << yle[0] << endl;
       Float_t alpha1 = p_alpha((xle[0]+yle[0])/2);
@@ -243,7 +252,7 @@ Int_t C_Chn=a;
     if (a>=40 && a<=47) {C_Chn=79-a;}   // Vertical, meaning back of detector
 */
     if (a>=32 && a<=39) {C_Chn=39-a+32;}    // Vertical, meaning back of detector
-    if (a>=40 && a<=47) {C_Chn=10;}   // Vertical, meaning back of detector
+    if (a>=40 && a<=47) {C_Chn=a  ;}   // Vertical, meaning back of detector
 
     if (a>=48 && a<=55) {C_Chn=a+8;}    // Horizontal, meaing front of detector
     if (a>=56 && a<=63) {C_Chn=111-a;}  // Horizontal, meaing front of detector
