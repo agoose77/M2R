@@ -1,4 +1,4 @@
-git add *.
+git add *.C
 git add *.txt
 git add *.md
 git add *.sh

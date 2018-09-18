@@ -67,7 +67,6 @@ root [3] data->Show(5)
 #define GREEN   "\033[32m"	/* Green */
 #define YELLOW  "\033[33m"	/* Yellow */
 #define RED     "\033[31m"	/* Red */
-Int_t imap(Int_t); // change the maping of thin detectors
 
 void M2RV2() {
 
@@ -201,21 +200,4 @@ if (is) { // this if is just to check if the file exists.
   cout << GREEN << "Total Real Time: "<< StopWatch.RealTime() << "s" << endl;
 }
 else{cout<< "error opening the file\n";}
-}
-Int_t imap(Int_t a) // IMAP channel exchange for 2 thin dssds
-{
-Int_t C_Chn=a;
-  if (a<64) {
-    // 0 -> 31 are channels in the left detector
-    if (a>=0 && a<=7) {C_Chn=8+a;}      // Vertical, meaning back of detector
-    if (a>=8 && a<=15) {C_Chn=15-a;}    // Vertical, meaning back of detector
-    if (a>=16 && a<=23) {C_Chn=a+8;}    // Horizontal, meaing front of detecto
-    if (a>=24 && a<=31) {C_Chn=47-a;}   // Horizontal, meaing front of detecto
-    // 32 -> 63 are channels in the right detector
-    if (a>=32 && a<=39) {C_Chn=a+8;}    // Vertical, meaning back of detector
-    if (a>=40 && a<=47) {C_Chn=79-a;}   // Vertical, meaning back of detector
-    if (a>=48 && a<=55) {C_Chn=a+8;}    // Horizontal, meaing front of detector
-    if (a>=56 && a<=63) {C_Chn=111-a;}  // Horizontal, meaing front of detector
-  }
-  return C_Chn;
 }
