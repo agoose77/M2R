@@ -97,7 +97,7 @@
   alphaenergyl->SetTitle("Energy distribution in left DSSD");
   c3->SaveAs("leftdssdenergy.pdf");
 
-//// labr3///////////////
+//// labr3///////////////buenazo
 TCanvas * c4 = new TCanvas("c","c",1920,1080);
 labrsingleGATE->GetXaxis()->SetRangeUser(0,8);
 labrsingleGATE->GetXaxis()->SetTitle("Energy 0.04 MeV/bin");
