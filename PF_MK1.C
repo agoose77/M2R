@@ -272,7 +272,7 @@ void PF_MK1(){
 
           labrt->Fill(realampl);
         }
-        if (realampl>5.869 && realampl<5.969) {labrP++;}
+        if (realampl>5.139 && realampl<5.699) {labrP++;}
         if (realampl>4.33 && realampl<4.53) {labrC1++;}
       }
 

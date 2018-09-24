@@ -71,7 +71,9 @@
   c->SetLogy();
   c->SaveAs("timeshiftcorrected.pdf");
 
-////  emergy dssd
+////  emergy dssd///////
+
+
   TCanvas * c2 = new TCanvas("c","c",1920,1080);
   alphaenergylGATE->GetXaxis()->SetRangeUser(0,8);
   alphaenergylGATE->GetXaxis()->SetTitle("Energy 0.08 MeV/bin");
@@ -120,7 +122,7 @@ c5->SaveAs("labr3energy.pdf");
 //// labr3 ZOOM
 
 TCanvas * c4 = new TCanvas("c","c",1920,1080);
-labrsingleGATE->GetXaxis()->SetRangeUser(5.2,6.5);
+labrsingleGATE->GetXaxis()->SetRangeUser(4.4,6.5);
 labrsingleGATE->GetXaxis()->SetTitle("Energy 0.04 MeV/bin");
 labrsingleGATE->GetYaxis()->SetTitle("Counts");
 labrsingleGATE->GetYaxis()->SetTitleOffset(1.2);
@@ -129,7 +131,7 @@ labrsingleGATE->SetStats(0);
 labrsingleGATE->Draw();
 labrsingleGATE->SetTitle("Gated energy distribution the LaBr3 array zoomed");
 TH1 *filledgate = (TH1*)labrsingleGATE->Clone("filledgate");
-filledgate->GetXaxis()->SetRangeUser(5.869,6.019);
+filledgate->GetXaxis()->SetRangeUser(5.139,5.699);
 filledgate->SetFillColor(2);
 filledgate->Draw("same");
 c4->SaveAs("labr3energygatedZOOM.pdf");
@@ -144,7 +146,7 @@ labrsingle->SetStats(0);
 labrsingle->Draw();
 labrsingle->SetTitle("Energy distribution the LaBr3 array zoomed");
 TH1 *filled = (TH1*)labrsingle->Clone("filledgate");
-filled->GetXaxis()->SetRangeUser(5.869,6.019);
+filled->GetXaxis()->SetRangeUser(5.139,5.699);
 filled->SetFillColor(2);
 filled->Draw("same");
 c5->SaveAs("labr3energyZOOM.pdf");
@@ -191,7 +193,7 @@ TCanvas *c1 = new TCanvas("c1","multipads",1920,1080);
    tac->Draw();
    TH1F *tacc = (TH1F*)tac->Clone();
    tacc->SetFillColor(46);
-   tacc->GetXaxis()->SetRange(630,700);
+   tacc->GetXaxis()->SetRange(630,750);
    TCanvas *c1 = new TCanvas("c1","multipads",1920,1080);
    tac->Draw();
    tacc->Draw("same");
