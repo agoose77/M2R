@@ -322,7 +322,7 @@ void PF_MK1(){
 
 
 
-    if (hitonlabr==1) {
+    if (hitonlabr==1 && labre[0]>0.4 ) {
       labrsingle->Fill(labre[0]);
       mapLaBrthetasingle->Fill(thetaLaBr(labr[0]));
       if (xlc==1 && ylc==1 && abs(xle[0]-yle[0])<Ethreshold && xrc==0 && yrc==0

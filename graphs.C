@@ -119,10 +119,24 @@ labrsingle->SetStats(0);
 labrsingle->Draw();
 labrsingle->SetTitle("Energy distribution the LaBr3 array");
 c5->SaveAs("labr3energy.pdf");
+
+// total
+TCanvas * c6 = new TCanvas("c","c",1920,1080);
+labrt->GetXaxis()->SetRangeUser(0,8);
+labrt->GetXaxis()->SetTitle("Energy 0.04 MeV/bin");
+labrt->GetYaxis()->SetTitle("Counts");
+labrt->GetYaxis()->SetTitleOffset(1.2);
+labrt->CenterTitle();
+labrt->SetStats(0);
+labrt->Draw();
+labrsingle->SetLineColor(2);
+labrsingle->Draw("SAME");
+labrt->SetTitle("Energy distribution the LaBr3 array");
+c6->SaveAs("labr3energytotal.pdf");
 //// labr3 ZOOM
 
 TCanvas * c4 = new TCanvas("c","c",1920,1080);
-labrsingleGATE->GetXaxis()->SetRangeUser(4.4,6.5);
+labrsingleGATE->GetXaxis()->SetRangeUser(4.58,6.5);
 labrsingleGATE->GetXaxis()->SetTitle("Energy 0.04 MeV/bin");
 labrsingleGATE->GetYaxis()->SetTitle("Counts");
 labrsingleGATE->GetYaxis()->SetTitleOffset(1.2);
@@ -151,17 +165,7 @@ filled->SetFillColor(2);
 filled->Draw("same");
 c5->SaveAs("labr3energyZOOM.pdf");
 
-// total
-TCanvas * c6 = new TCanvas("c","c",1920,1080);
-labrt->GetXaxis()->SetRangeUser(0,8);
-labrt->GetXaxis()->SetTitle("Energy 0.04 MeV/bin");
-labrt->GetYaxis()->SetTitle("Counts");
-labrt->GetYaxis()->SetTitleOffset(1.2);
-labrt->CenterTitle();
-labrt->SetStats(0);
-labrt->Draw();
-labrt->SetTitle("Energy distribution the LaBr3 array");
-c6->SaveAs("labr3energytotal.pdf");
+
 
 /// graphs for TAC and DSSD maps
 
