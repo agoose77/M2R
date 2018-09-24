@@ -1,1 +1,0 @@
-scp charissa@147.188.40.100:/data/TapeData/JAN18/R7_0 /home/pedro
