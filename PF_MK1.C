@@ -295,7 +295,7 @@ void PF_MK1(){
       mapleftsingle->Fill(xl[s_lxe[0]],yl[s_lye[0]]);
       alphaenergyl->Fill((xle[0]+yle[0])/2);
       mapleftsinglex->Fill(xl[s_lxe[0]]);
-      if (hitontac>0 && tactac > 630 && tactac<700 && labrP>0 && hitonlabr==1) {
+      if (hitontac>0 && tactac > 630 && tactac<750 && labrP>0 && hitonlabr==1) {
 
         mapleftsingleGATEx->Fill(xl[s_lxe[0]]);
         mapleftsingleGATE->Fill(xl[s_lxe[0]],yl[s_lye[0]]);
@@ -325,7 +325,8 @@ void PF_MK1(){
     if (hitonlabr==1) {
       labrsingle->Fill(labre[0]);
       mapLaBrthetasingle->Fill(thetaLaBr(labr[0]));
-      if (xlc==1 && ylc==1 && abs(xle[0]-yle[0])<Ethreshold && xrc==0 && yrc==0 && ((xle[0]+yle[0])/2)>1.7 && ((xle[0]+yle[0])/2)<2.7 && hitontac>0 && tactac > 630 && tactac<700) {
+      if (xlc==1 && ylc==1 && abs(xle[0]-yle[0])<Ethreshold && xrc==0 && yrc==0
+          && ((xle[0]+yle[0])/2)>1.7 && ((xle[0]+yle[0])/2)<2.7 && hitontac>0 && tactac > 630 && tactac<750) {
         labrsingleGATE->Fill(labre[0]);
         mapLaBrthetasingleGATE->Fill(thetaLaBr(labr[0]));
 
